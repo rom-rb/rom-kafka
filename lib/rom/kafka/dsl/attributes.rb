@@ -51,6 +51,16 @@ module ROM::Kafka
         @attributes = default.merge assigned
       end
 
+      # Returns the subhash of attributes by their names
+      #
+      # @param [Array<Symbol>] names
+      #
+      # @return [Hash]
+      #
+      def slice(*names)
+        attributes.select { |name| names.include? name }
+      end
+
       # @private
       def self.included(klass)
         klass.__send__ :extend, ClassMethods
