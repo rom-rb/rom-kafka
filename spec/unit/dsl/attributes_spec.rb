@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-describe ROM::Kafka::Driver::Attributes do
+describe ROM::Kafka::DSL::Attributes do
 
   let(:klass)  { Class.new }
   let(:object) { klass.new }
@@ -74,4 +74,4 @@ describe ROM::Kafka::Driver::Attributes do
     end
   end # describe #initialize
 
-end # describe ROM::Kafka::Driver::Attributes
+end # describe ROM::Kafka::DSL::Attributes

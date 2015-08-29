@@ -2,7 +2,7 @@
 
 module ROM::Kafka
 
-  module Driver
+  module DSL
 
     # Features to declare attributes and initialize them from hash
     #
@@ -58,6 +58,6 @@ module ROM::Kafka
 
     end # module Attributes
 
-  end # module Driver
+  end # module DSL
 
 end # module ROM::Kafka

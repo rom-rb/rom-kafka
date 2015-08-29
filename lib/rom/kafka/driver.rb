@@ -10,8 +10,6 @@ module ROM::Kafka
   #
   module Driver
 
-    require_relative "driver/attributes"
-
   end # module Driver
 
 end # module ROM::Kafka

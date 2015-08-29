@@ -14,7 +14,7 @@ module ROM
   #
   module Kafka
 
-    require_relative "kafka/driver"
+    require_relative "kafka/dsl"
 
   end # module Kafka
 
