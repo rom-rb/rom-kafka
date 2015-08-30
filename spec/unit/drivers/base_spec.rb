@@ -23,14 +23,14 @@ describe ROM::Kafka::Drivers::Base do
     end
   end # describe #each
 
-  describe "#send" do
-    subject { session.send(value: "Hi", topic: "logs", key: "greetings") }
+  describe "#publish" do
+    subject { session.publish(value: "Hi", topic: "logs", key: "greetings") }
 
     it "raises NotImplementedError" do
       expect { subject }.to raise_error do |error|
         expect(error).to be_kind_of NotImplementedError
         expect(error.message)
-          .to eql "The consumer cannot send messages to a Kafka broker"
+          .to eql "The consumer cannot publish messages to a Kafka broker"
       end
     end
   end # describe #send

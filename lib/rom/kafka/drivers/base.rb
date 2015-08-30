@@ -38,9 +38,9 @@ module ROM::Kafka
       #
       # @raise [NotImplementedError]
       #
-      def send(*)
+      def publish(*)
         fail NotImplementedError
-          .new "The consumer cannot send messages to a Kafka broker"
+          .new "The consumer cannot publish messages to a Kafka broker"
       end
 
       # Closes the connection

@@ -55,14 +55,14 @@ describe ROM::Kafka::Dataset do
     end
   end # describe #each
 
-  describe "#send" do
-    after { dataset.send(*tuples) }
+  describe "#publish" do
+    after { dataset.publish(*tuples) }
 
     let(:tuples) { [double, double] }
 
     it "is delegated to session" do
-      expect(session).to receive(:send).with(*tuples)
+      expect(session).to receive(:publish).with(*tuples)
     end
-  end # describe #send
+  end # describe #publish
 
 end # describe ROM::Kafka::Dataset

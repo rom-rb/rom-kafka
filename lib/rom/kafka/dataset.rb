@@ -65,7 +65,7 @@ module ROM::Kafka
       session.each
     end
 
-    # Sends messages to the Kafka brokers
+    # Publishes messages to the Kafka brokers
     #
     # Defined by the producer session only.
     #
@@ -75,8 +75,8 @@ module ROM::Kafka
     #
     # @raise [NotImplementedError] if a client of gateway is a consumer.
     #
-    def send(*tuples)
-      session.send(*tuples)
+    def publish(*tuples)
+      session.publish(*tuples)
     end
 
     # Returns a new dataset with updated attributes
