@@ -30,12 +30,12 @@ describe ROM::Kafka::Dataset do
     end
   end # describe #session
 
-  describe "#offset" do
-    subject { dataset.offset(10) }
+  describe "#using" do
+    subject { dataset.using(bar: :QUX, baz: :BAZ) }
 
-    let(:updated_attributes) { attributes.merge(offset: 10) }
+    let(:updated_attributes) { { foo: :FOO, bar: :QUX, baz: :BAZ } }
 
-    it "builds new dataset with the same attributes and updated offset" do
+    it "builds new dataset with updates attributes" do
       expect(subject).to be_kind_of described_class
       expect(subject.attributes).to eql(updated_attributes)
     end
@@ -45,7 +45,7 @@ describe ROM::Kafka::Dataset do
       expect(builder).to receive(:build).with(updated_attributes).ordered
       subject
     end
-  end # describe #offset
+  end # describe #using
 
   describe "#each" do
     after { dataset.each }

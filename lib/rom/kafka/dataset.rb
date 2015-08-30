@@ -49,8 +49,8 @@ module ROM::Kafka
     # @api private
     #
     def initialize(attributes)
-      @attributes = block_given? ? attributes.merge(yield) : attributes
-      @session    = Drivers.build @attributes
+      @attributes = attributes
+      @session    = Drivers.build(attributes)
     end
 
     # Returns the enumerator to iterate via fetched messages
@@ -69,7 +69,7 @@ module ROM::Kafka
     #
     # Defined by the producer session only.
     #
-    # @return [undefined]
+    # @return [Array<Hash>]
     #
     # @raise [NotImplementedError] if a client of gateway is a consumer.
     #
@@ -77,15 +77,15 @@ module ROM::Kafka
       session.send(*tuples)
     end
 
-    # Returns a new dataset with the same attributes, except for updated offset
+    # Returns a new dataset with updated attributes
     #
     # @param [Integer] value The new offset
     #
     # @return [ROM::Kafka::Dataset]
     #
-    def offset(value)
+    def using(options)
       session.close
-      self.class.new(attributes) { { offset: value } }
+      self.class.new(attributes.merge(options))
     end
 
   end # class Dataset
