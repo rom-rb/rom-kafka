@@ -35,10 +35,4 @@ describe ROM::Kafka::Drivers::Base do
     end
   end # describe #send
 
-  describe "#close" do
-    subject { session.close }
-
-    it { is_expected.to be_nil }
-  end # describe #close
-
 end # describe ROM::Kafka::Drivers::Base

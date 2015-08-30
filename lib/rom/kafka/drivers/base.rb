@@ -43,14 +43,6 @@ module ROM::Kafka
           .new "The consumer cannot publish messages to a Kafka broker"
       end
 
-      # Closes the connection
-      #
-      # @return [nil]
-      #
-      # @abstract
-      #
-      def close; end
-
     end # class Base
 
   end # module Drivers

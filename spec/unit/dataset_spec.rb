@@ -2,9 +2,12 @@
 
 describe ROM::Kafka::Dataset do
 
-  let(:dataset)    { described_class.new attributes }
+  let(:dataset)    { described_class.new role, topic, attributes }
   let(:attributes) { { foo: :FOO, bar: :BAR } }
-  let(:session)    { double :session, each: nil, send: nil, close: nil }
+  let(:topic)      { :qux }
+  let(:role)       { :producer }
+
+  let(:session)    { double :session, each: nil, publish: nil }
   let(:builder)    { ROM::Kafka::Drivers }
 
   before { allow(builder).to receive(:build) { session } }
@@ -21,34 +24,51 @@ describe ROM::Kafka::Dataset do
     end
   end # describe #attributes
 
-  describe "#session" do
-    subject { dataset.session }
+  describe "#role" do
+    subject { dataset.role }
 
     it "is initialized" do
-      expect(builder).to receive(:build).with(attributes)
-      expect(subject).to eql(session)
+      expect(subject).to eql(role)
     end
-  end # describe #session
+  end # describe #role
+
+  describe "#topic" do
+    subject { dataset.topic }
+
+    it "is initialized" do
+      expect(subject).to eql(topic)
+    end
+  end # describe #topic
 
   describe "#using" do
     subject { dataset.using(bar: :QUX, baz: :BAZ) }
 
     let(:updated_attributes) { { foo: :FOO, bar: :QUX, baz: :BAZ } }
 
-    it "builds new dataset with updates attributes" do
+    it "builds new dataset" do
       expect(subject).to be_kind_of described_class
+    end
+
+    it "updates attributes" do
       expect(subject.attributes).to eql(updated_attributes)
     end
 
-    it "closes and re-builds the session" do
-      expect(session).to receive(:close).ordered
-      expect(builder).to receive(:build).with(updated_attributes).ordered
-      subject
+    it "preserves topic" do
+      expect(subject.topic).to eql(topic)
+    end
+
+    it "preserves role" do
+      expect(subject.role).to eql(role)
     end
   end # describe #using
 
   describe "#each" do
     after { dataset.each }
+
+    it "is builds the session" do
+      expect(builder).to receive(:build)
+        .with(role, attributes.merge(topic: topic))
+    end
 
     it "is delegated to session" do
       expect(session).to receive(:each)
@@ -59,6 +79,11 @@ describe ROM::Kafka::Dataset do
     after { dataset.publish(*tuples) }
 
     let(:tuples) { [double, double] }
+
+    it "is builds the session" do
+      expect(builder).to receive(:build)
+        .with(role, attributes.merge(topic: topic))
+    end
 
     it "is delegated to session" do
       expect(session).to receive(:publish).with(*tuples)

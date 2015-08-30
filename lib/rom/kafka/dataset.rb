@@ -20,12 +20,17 @@ module ROM::Kafka
 
     include Enumerable
 
-    # @!attribute [r] session
+    # @!attribute [r] role
     #
-    # @return [ROM::Kafka::Drivers::Base]
-    #   The established session to Kafka (either producer or consumer).
+    # @return [String] The role of Kafka client
     #
-    attr_reader :session
+    attr_reader :role
+
+    # @!attribute [r] topic
+    #
+    # @return [String] The name of the current topic
+    #
+    attr_reader :topic
 
     # @!attribute [r] attributes
     #
@@ -33,14 +38,13 @@ module ROM::Kafka
     #
     attr_reader :attributes
 
-    # Initializes a partition with attributes from the gateway,
-    # as well as topic, partition key and offset.
+    # Initializes a partition with topic and attributes from the gateway.
+    #
+    # @param [#to_s] topic
     #
     # @option (see ROM::Kafka::Gateway)
     # @option attributes [:producer, :consumer] :role
     #   The role of Kafka client
-    # @option attributes [#to_s] :topic
-    #   The name of the topic.
     # @option attributes [#to_s] :key
     #   The partition key
     # @option attributes [Integer] :offset
@@ -48,9 +52,10 @@ module ROM::Kafka
     #
     # @api private
     #
-    def initialize(attributes)
+    def initialize(role, topic, attributes)
+      @role       = role
+      @topic      = topic
       @attributes = attributes
-      @session    = Drivers.build(attributes)
     end
 
     # Returns the enumerator to iterate via fetched messages
@@ -86,8 +91,13 @@ module ROM::Kafka
     # @return [ROM::Kafka::Dataset]
     #
     def using(options)
-      session.close
-      self.class.new(attributes.merge(options))
+      self.class.new(role, topic, attributes.merge(options))
+    end
+
+    private
+
+    def session
+      Drivers.build role, attributes.merge(topic: topic)
     end
 
   end # class Dataset

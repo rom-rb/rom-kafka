@@ -181,43 +181,6 @@ describe ROM::Kafka::Gateway do
     it { is_expected.to eql(nil) }
   end # describe #[]
 
-  describe "#dataset" do
-    shared_examples :registering_a_dataset_by_name do
-      subject { gateway.dataset name }
-      before  { allow(klass).to receive(:new) { dataset } }
-
-      let(:topic)   { "logs" }
-      let(:key)     { "my.beloved.users" }
-      let(:klass)   { ROM::Kafka::Dataset }
-      let(:dataset) { double :dataset }
-
-      it "[builds a dataset]" do
-        expect(klass).to receive(:new) do |attributes|
-          expect(attributes).to eql gateway
-            .attributes
-            .merge(topic: topic, key: key, offset: 0, role: :producer)
-        end
-        subject
-      end
-
-      it "[registers a dataset]" do
-        expect { subject }.to change { gateway[name] }.from(nil).to(dataset)
-      end
-
-      it "[returns itself]" do
-        expect(subject).to eql(gateway)
-      end
-    end
-
-    it_behaves_like :registering_a_dataset_by_name do
-      let(:name) { "#{topic}:#{key}" }
-    end
-
-    it_behaves_like :registering_a_dataset_by_name do
-      let(:name) { :"#{topic}:#{key}" }
-    end
-  end # describe #dataset
-
   describe "#dataset?" do
     before do
       allow(gateway).to receive(:[]) { |name| { foo: :FOO }[name.to_sym] }
@@ -233,6 +196,33 @@ describe ROM::Kafka::Gateway do
       subject { gateway.dataset? "bar" }
 
       it { is_expected.to eql false }
+    end
+  end # describe #dataset
+
+  describe "#dataset" do
+    subject { gateway.dataset topic }
+
+    let(:klass)   { ROM::Kafka::Dataset }
+    let(:dataset) { double :dataset }
+    let(:topic)   { "foobar" }
+
+    before { allow(klass).to receive(:new) { dataset } }
+
+    it "builds a dataset" do
+      expect(klass).to receive(:new).with(:producer, topic, gateway.attributes)
+      subject
+    end
+
+    it "registers a dataset by symbol" do
+      expect { subject }.to change { gateway[:foobar] }.from(nil).to(dataset)
+    end
+
+    it "registers a dataset by string" do
+      expect { subject }.to change { gateway["foobar"] }.from(nil).to(dataset)
+    end
+
+    it "returns itself" do
+      expect(subject).to eql(gateway)
     end
   end # describe #dataset
 

@@ -122,49 +122,38 @@ module ROM::Kafka
       @datasets = {}
     end
 
-    # Returns the registered dataset by name
+    # Returns the registered dataset by topic
     #
-    # @param [#to_sym] name
+    # @param [#to_sym] topic
     #
     # @return [ROM::Kafka::Dataset]
     #
-    def [](name)
-      @datasets[name.to_sym]
+    def [](topic)
+      @datasets[topic.to_sym]
     end
 
-    # Registers the dataset by name
+    # Registers the dataset by topic
     #
-    # The name should consist both the topic name and partition key, divided
-    # by a colon (`:`). The key can include dots, but not a colons.
-    #
-    # @example
-    #   dataset "logs:my.beloved.users"
-    #
-    # @param [#to_sym] name The full name of the dataset in dot notation.
+    # @param [#to_sym] topic
     #
     # @return [self] itself
     #
-    def dataset(name)
-      topic, key = name.to_s.split(":")
-      @datasets[name.to_sym] = Dataset.new(dataset_attributes(topic, key))
+    def dataset(topic)
+      @datasets[topic.to_sym] = Dataset.new(role, topic, attributes)
       self
     end
 
-    # Checks whether a dataset is registered by name
+    # Checks whether a dataset is registered by topic
     #
-    # @param [#to_sym] name
+    # @param [#to_sym] topic
     #
     # @return [Boolean]
     #
-    def dataset?(name)
-      self[name] ? true : false
+    def dataset?(topic)
+      self[topic] ? true : false
     end
 
     private
-
-    def dataset_attributes(topic, key)
-      attributes.merge(role: role, topic: topic, key: key, offset: 0)
-    end
 
     def extract_attributes(options)
       attributes = options.last.instance_of?(Hash) ? options.pop : {}
