@@ -69,7 +69,9 @@ module ROM::Kafka
     #
     # Defined by the producer session only.
     #
-    # @return [Array<Hash>]
+    # @param [Hash, Array<Hash>] tuples The list of messages to be sent to Kafka
+    #
+    # @return [Array<Hash>] the list of messages sent to Kafka
     #
     # @raise [NotImplementedError] if a client of gateway is a consumer.
     #
@@ -79,7 +81,7 @@ module ROM::Kafka
 
     # Returns a new dataset with updated attributes
     #
-    # @param [Integer] value The new offset
+    # @param [Hash] options The part of attributes to be updated
     #
     # @return [ROM::Kafka::Dataset]
     #
