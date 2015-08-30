@@ -19,6 +19,7 @@ module ROM
     require_relative "kafka/dataset"
     require_relative "kafka/gateway"
     require_relative "kafka/relation"
+    require_relative "kafka/create"
 
   end # module Kafka
 
