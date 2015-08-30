@@ -2,17 +2,17 @@
 
 describe ROM::Kafka::Drivers::Base do
 
-  let(:driver) { described_class.new }
+  let(:session) { described_class.new }
 
   describe "#new" do
-    subject { driver }
+    subject { session }
 
     it { is_expected.to be_kind_of ROM::Kafka::DSL::Attributes }
     it { is_expected.to be_kind_of Enumerable }
   end # describe #new
 
   describe "#each" do
-    subject { driver.each }
+    subject { session.each }
 
     it "raises NotImplementedError" do
       expect { subject }.to raise_error do |error|
@@ -24,7 +24,7 @@ describe ROM::Kafka::Drivers::Base do
   end # describe #each
 
   describe "#send" do
-    subject { driver.send(value: "Hi", topic: "logs", key: "greetings") }
+    subject { session.send(value: "Hi", topic: "logs", key: "greetings") }
 
     it "raises NotImplementedError" do
       expect { subject }.to raise_error do |error|
@@ -34,5 +34,11 @@ describe ROM::Kafka::Drivers::Base do
       end
     end
   end # describe #send
+
+  describe "#close" do
+    subject { session.close }
+
+    it { is_expected.to be_nil }
+  end # describe #close
 
 end # describe ROM::Kafka::Drivers::Base

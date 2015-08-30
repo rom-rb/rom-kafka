@@ -8,14 +8,19 @@ module ROM::Kafka
     #
     # @api private
     #
+    # @abstract
+    #
     class Base
 
       include DSL::Attributes
       include Enumerable
 
-      # The method is forbidden by default.
+      # Reads message(s) from Kafka.
       #
+      # The method is forbidden by default.
       # Only concrete `Consumer` driver can get messages from Kafka.
+      #
+      # @return [Enumerator]
       #
       # @raise [NotImplementedError]
       #
@@ -24,9 +29,12 @@ module ROM::Kafka
           .new "The producer cannot fetch messages from a Kafka broker"
       end
 
-      # The method is forbidden by default.
+      # Writes message(s) to Kafka.
       #
+      # The method is forbidden by default.
       # Only concrete `Producer` driver can put messages to Kafka.
+      #
+      # @return [undefined]
       #
       # @raise [NotImplementedError]
       #
@@ -34,6 +42,14 @@ module ROM::Kafka
         fail NotImplementedError
           .new "The consumer cannot send messages to a Kafka broker"
       end
+
+      # Closes the connection
+      #
+      # @return [nil]
+      #
+      # @abstract
+      #
+      def close; end
 
     end # class Base
 
