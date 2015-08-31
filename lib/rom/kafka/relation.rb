@@ -9,18 +9,21 @@ module ROM::Kafka
   #   ROM.setup(:kafka, :consumer, "localhost:9092")
   #
   #   class Users < ROM::Relation[:kafka]
-  #     dataset "log.users"
+  #     topic "users"
   #   end
   #
   #   rom = ROM.finalize.env
-  #   rom.relation(:users).using(max_wait_ms: 100).offset(10).to_a
-  #   # => [{ value: "something", topic: "log", key: "users", offset: 10 }]
+  #   rom.relation(:users).using(max_wait_ms: 100).where(partition: 1).to_a
+  #   # => [
+  #   #      { value: "something", topic: "users", partition: 1, offset: 0 },
+  #   #      # ...
+  #   #    ]
   #
   class Relation < ROM::Relation
 
     adapter :kafka
 
-    # Returns the new relation where dataset is updated with given attributes
+    # Returns new relation where dataset is updated with given attributes
     #
     # @option attributes [Integer] :max_bytes
     # @option attributes [Integer] :min_bytes
@@ -29,34 +32,33 @@ module ROM::Kafka
     # @return [ROM::Kafka::Relation]
     #
     def using(attributes)
-      reload(attributes, :max_bytes, :min_bytes, :max_wait_ms)
+      allowed = [:max_bytes, :min_bytes, :max_wait_ms]
+      options = attributes.select { |key| allowed.include? key }
+
+      self.class.new dataset.update(options)
     end
 
-    # Returns the new relation with updated offset attribute
+    # Returns new relation with updated offset attribute
     #
     # @param [Integer] value
     #
     # @return [ROM::Kafka::Relation]
     #
     def offset(value)
-      reload({ offset: value }, :offset)
+      self.class.new dataset.reset(offset: value)
     end
 
-    # Returns the new relation with updated partition to fetch messages from
+    # Returns new relation with updated partition to fetch messages from
     #
     # @option attributes [Integer] :partition
     #
     # @return [ROM::Kafka::Relation]
     #
     def where(attributes)
-      reload(attributes, :key, :partition)
-    end
+      allowed = [:key, :partition]
+      options = attributes.select { |key| allowed.include? key }
 
-    private
-
-    def reload(options, *keys)
-      attributes = options.select { |key| keys.include? key }
-      self.class.new dataset.using(attributes)
+      self.class.new dataset.reset(options)
     end
 
   end # class Relation

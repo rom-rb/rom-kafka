@@ -3,7 +3,7 @@
 describe ROM::Kafka::Commands::Create do
 
   let(:command)  { described_class.new relation }
-  let(:relation) { double :relation, using: updated, dataset: dataset }
+  let(:relation) { double :relation, where: updated, dataset: dataset }
   let(:updated)  { double :updated }
   let(:dataset)  { double :dataset, publish: tuples }
   let(:tuples)   { [double(:first_message), double(:second_message)] }
@@ -26,21 +26,6 @@ describe ROM::Kafka::Commands::Create do
     it { is_expected.to eql(relation) }
   end # describe #relation
 
-  describe "#using" do
-    subject { command.using(options) }
-
-    let(:options) { { foo: :FOO, bar: :BAR } }
-
-    it "returns a relation" do
-      expect(subject).to be_kind_of described_class
-    end
-
-    it "updates the relation" do
-      expect(relation).to receive(:using).with(options)
-      expect(subject.relation).to eql(updated)
-    end
-  end # describe #using
-
   describe "#execute" do
     subject { command.execute(*tuples) }
 
@@ -53,5 +38,20 @@ describe ROM::Kafka::Commands::Create do
       expect(subject).to eql(tuples)
     end
   end # describe #execute
+
+  describe "#where" do
+    subject { command.where(options) }
+
+    let(:options) { { foo: :FOO, bar: :BAR } }
+
+    it "returns a relation" do
+      expect(subject).to be_kind_of described_class
+    end
+
+    it "updates the relation" do
+      expect(relation).to receive(:where).with(options)
+      expect(subject.relation).to eql(updated)
+    end
+  end # describe #using
 
 end # describe ROM::Kafka::Relation

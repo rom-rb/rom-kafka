@@ -2,9 +2,11 @@
 
 describe ROM::Kafka::Relation do
 
-  let(:relation)        { described_class.new dataset }
-  let(:dataset)         { double :dataset, using: updated_dataset }
+  let(:relation) { described_class.new dataset }
   let(:updated_dataset) { double :updated_dataset }
+  let(:dataset) do
+    double :dataset, update: updated_dataset, reset: updated_dataset
+  end
 
   describe ".adapter" do
     subject { described_class.adapter }
@@ -34,7 +36,7 @@ describe ROM::Kafka::Relation do
     end
 
     it "updates the dataset with allowed options only" do
-      expect(dataset).to receive(:using).with(options)
+      expect(dataset).to receive(:update).with(options)
       expect(subject.dataset).to eql(updated_dataset)
     end
   end # describe #using
@@ -49,7 +51,7 @@ describe ROM::Kafka::Relation do
     end
 
     it "updates the dataset with given offset" do
-      expect(dataset).to receive(:using).with(offset: value)
+      expect(dataset).to receive(:reset).with(offset: value)
       expect(subject.dataset).to eql(updated_dataset)
     end
   end # describe #offset
@@ -62,7 +64,7 @@ describe ROM::Kafka::Relation do
     end
 
     it "updates the dataset with key and partition" do
-      expect(dataset).to receive(:using).with(key: :foo, partition: 3)
+      expect(dataset).to receive(:reset).with(key: :foo, partition: 3)
       expect(subject.dataset).to eql(updated_dataset)
     end
   end # describe #where

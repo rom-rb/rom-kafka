@@ -13,39 +13,30 @@ module ROM::Kafka
     #   ROM.setup(:kafka, :consumer, "localhost:9092")
     #
     #   class Users < ROM::Relation[:kafka]
-    #     dataset "log.users"
+    #     dataset "users"
     #   end
     #
-    #   class AddUsers < ROM::Commands::Create[:kafka]
+    #   class GreetUsers < ROM::Commands::Create[:kafka]
+    #     relation :users
+    #     register_as :greet
     #   end
     #
     #   rom = ROM.finalize.env
-    #   rom.relation(:users).using(max_wait_ms: 100).offset(10).to_a
-    #   # => [{ value: "something", topic: "log", key: "users", offset: 10 }]
+    #   rom.commands(:users).greet.where(partition: 1).call "Hi!"
+    #   # => [{ value: "Hi!", topic: "users", key: "users", offset: 10 }]
     #
     class Create < ROM::Commands::Create
 
       adapter :kafka
 
-      # Sends tuples to the current topic/partition of Kafka
+      # Sends messages to the current topic/partition of Kafka
       #
       # @param (see ROM::Kafka::Dataset#publish)
       #
       # @return (see ROM::Kafka::Dataset#publish)
       #
-      def execute(*tuples)
-        dataset.publish(*tuples)
-      end
-
-      # Returns the new commmand where relation's dataset is updated
-      # using given options
-      #
-      # @param [Hash] options
-      #
-      # @return [ROM::Kafka::Commands::Create]
-      #
-      def using(options)
-        new relation.using(options)
+      def execute(*messages)
+        dataset.publish(*messages)
       end
 
     end # class Create

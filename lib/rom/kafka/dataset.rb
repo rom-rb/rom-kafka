@@ -38,6 +38,12 @@ module ROM::Kafka
     #
     attr_reader :attributes
 
+    # @!attribute [r] session
+    #
+    # @return [ROM::Kafka::Drivers::Base] the current session to Kafka
+    #
+    attr_reader :session
+
     # Initializes a partition with topic and attributes from the gateway.
     #
     # @param [#to_s] topic
@@ -52,52 +58,56 @@ module ROM::Kafka
     #
     # @api private
     #
-    def initialize(role, topic, attributes)
-      @role       = role
-      @topic      = topic
+    def initialize(role, topic, attributes, session = nil)
+      @role = role
+      @topic = topic
       @attributes = attributes
+      @session = session || Drivers.build(role, attributes.merge(topic: topic))
     end
 
-    # Returns the enumerator to iterate via fetched messages
-    #
-    # Defined by the consumer session only.
-    #
-    # @return [Enumerator]
-    #
-    # @raise [NotImplementedError] if a client of gateway is a producer.
-    #
-    def each
-      session.each
-    end
-
-    # Publishes messages to the Kafka brokers
-    #
-    # Defined by the producer session only.
-    #
-    # @param [Hash, Array<Hash>] tuples The list of messages to be sent to Kafka
-    #
-    # @return [Array<Hash>] the list of messages sent to Kafka
-    #
-    # @raise [NotImplementedError] if a client of gateway is a consumer.
-    #
-    def publish(*tuples)
-      session.publish(*tuples)
-    end
-
-    # Returns a new dataset with updated attributes
+    # Returns a new dataset with updated attributes and the same session
     #
     # @param [Hash] options The part of attributes to be updated
     #
     # @return [ROM::Kafka::Dataset]
     #
-    def using(options)
+    def update(options)
+      self.class.new(role, topic, attributes.merge(options), session)
+    end
+
+    # Returns a new dataset with updated attributes and new session
+    #
+    # @param [Hash] options The part of attributes to be updated
+    #
+    # @return [ROM::Kafka::Dataset]
+    #
+    def reset(options)
+      session.close
       self.class.new(role, topic, attributes.merge(options))
     end
 
-    private
+    # Publishes messages to the Kafka brokers
+    #
+    # Used by the producer session only.
+    #
+    # @param [Object, Array] messages The list of messages to be sent to Kafka
+    #
+    # @return [Array<Hash>] the list of tuples sent to Kafka
+    #
+    def publish(*messages)
+      session.publish(*messages)
+    end
 
-    def session
-      Drivers.build role, attributes.merge(topic: topic)
+    # Returns the enumerator to iterate via fetched tuples
+    #
+    # Used by the consumer session only.
+    #
+    # @yieldparam [Hash] tuple
+    #
+    # @return [Enumerator<Hash>]
+    #
+    def each
+      session.fetch(attributes).each
     end
 
   end # class Dataset
