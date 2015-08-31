@@ -35,6 +35,7 @@ module ROM::Kafka
     attribute :socket_timeout_ms, default: 10_000
 
     # Consumer-specific attributes
+    attribute :offset, default: 0
     attribute :min_bytes, default: 1
     attribute :max_bytes, default: 1_048_576
     attribute :max_wait_ms, default: 100
@@ -110,6 +111,8 @@ module ROM::Kafka
     # @option attributes [Integer] :socket_timeout_ms (10_000)
     #   How long the producer/consumer socket waits for any reply from server.
     #
+    # @option offset [Integer] :offset
+    #   The initial offset to start fetching from.
     # @option attributes [Integer] :min_bytes (1)
     #   The smallest amount of data the server should send.
     #   (By default send us data as soon as it is ready).

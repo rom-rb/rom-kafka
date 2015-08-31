@@ -18,7 +18,6 @@ describe ROM::Kafka::Gateway do
         ack_timeout_ms: 1_500,
         async: false,
         client: nil,
-        partitioner: nil,
         compression_codec: nil,
         hosts: [],
         max_bytes: 1_048_576,
@@ -26,6 +25,8 @@ describe ROM::Kafka::Gateway do
         max_wait_ms: 100,
         metadata_refresh_interval_ms: 600_000,
         min_bytes: 1,
+        offset: 0,
+        partitioner: nil,
         port: 9092,
         required_acks: 0,
         retry_backoff_ms: 100,
@@ -175,6 +176,14 @@ describe ROM::Kafka::Gateway do
       expect(gateway.socket_timeout_ms).to eql(1_000)
     end
   end # describe #socket_timeout_ms
+
+  describe "#offset" do
+    let(:gateway) { described_class.new(:producer, offset: 1) }
+
+    it "is initialized" do
+      expect(gateway.offset).to eql(1)
+    end
+  end # describe #offset
 
   describe "#partitioner" do
     let(:gateway) { described_class.new(:producer, partitioner: partitioner) }
