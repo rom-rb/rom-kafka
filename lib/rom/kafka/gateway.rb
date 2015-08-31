@@ -19,7 +19,7 @@ module ROM::Kafka
     include DSL::Attributes
 
     # Attributes used by both producer and consumer
-    attribute :hosts
+    attribute :hosts, default: ["localhost"]
     attribute :port, default: 9092
     attribute :partitioner
 
@@ -172,7 +172,7 @@ module ROM::Kafka
 
     def extract_attributes(options)
       attributes = options.last.instance_of?(Hash) ? options.pop : {}
-      { hosts: options }.merge(attributes)
+      options.any? ? { hosts: options }.merge(attributes) : attributes
     end
 
   end # class Gateway

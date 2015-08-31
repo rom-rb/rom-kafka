@@ -19,7 +19,7 @@ describe ROM::Kafka::Gateway do
         ack_timeout_ms: 1_500,
         async: false,
         compression_codec: nil,
-        hosts: [],
+        hosts: ["localhost"],
         max_bytes: 1_048_576,
         max_send_retries: 3,
         max_wait_ms: 100,
