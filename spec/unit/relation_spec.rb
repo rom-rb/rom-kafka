@@ -14,6 +14,17 @@ describe ROM::Kafka::Relation do
     it { is_expected.to eql(:kafka) }
   end # describe .adapter
 
+  describe ".topic" do
+    subject { described_class.topic :foo }
+
+    it "is an alias for .dataset" do
+      allow(described_class).to receive(:dataset)
+
+      expect(described_class).to receive(:dataset).with(:foo)
+      subject
+    end
+  end # describe .topic
+
   describe ".new" do
     subject { relation }
 

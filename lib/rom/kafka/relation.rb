@@ -23,6 +23,16 @@ module ROM::Kafka
 
     adapter :kafka
 
+    # Kafka-specific alias for the ROM `.dataset` helper method.
+    #
+    # @param [#to_sym] name
+    #
+    # @return [undefined]
+    #
+    def self.topic(name)
+      dataset(name)
+    end
+
     # Returns new relation where dataset is updated with given attributes
     #
     # @option attributes [Integer] :max_bytes
