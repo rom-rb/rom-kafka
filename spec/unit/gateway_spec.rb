@@ -2,10 +2,11 @@
 
 describe ROM::Kafka::Gateway do
 
-  let(:gateway) { described_class.new :producer }
+  let(:gateway) { described_class.new(*params) }
+  let(:params)  { [:producer, :baz] }
 
   describe ".new" do
-    subject { described_class.new :producer, {} }
+    subject { described_class.new(*params, {}) }
 
     it { is_expected.to be_kind_of ROM::Kafka::DSL::Attributes }
   end # describe .new
@@ -17,7 +18,6 @@ describe ROM::Kafka::Gateway do
       expect(subject).to eql(
         ack_timeout_ms: 1_500,
         async: false,
-        client: nil,
         compression_codec: nil,
         hosts: [],
         max_bytes: 1_048_576,
@@ -41,7 +41,15 @@ describe ROM::Kafka::Gateway do
     it "is initialized" do
       expect(subject).to eql(:producer)
     end
-  end # describe #producer
+  end # describe #role
+
+  describe "#client" do
+    subject { gateway.client }
+
+    it "is initialized" do
+      expect(subject).to eql(:baz)
+    end
+  end # describe #client
 
   describe "#hosts" do
     subject { gateway.hosts }
@@ -49,20 +57,20 @@ describe ROM::Kafka::Gateway do
     let(:hosts) { %w(localhost:9092 127.0.0.1) }
 
     context "from string" do
-      let(:gateway) { described_class.new(:producer, *hosts) }
+      let(:gateway) { described_class.new(*params, *hosts) }
 
       it { is_expected.to eql hosts }
     end
 
     context "from the hosts option" do
-      let(:gateway) { described_class.new :producer, hosts: hosts }
+      let(:gateway) { described_class.new(*params, hosts: hosts) }
 
       it { is_expected.to eql hosts }
     end
 
     context "from mixed attributes" do
       let(:gateway) do
-        described_class.new :producer, "127.0.0.1:9092", hosts: hosts
+        described_class.new(*params, "127.0.0.1:9092", hosts: hosts)
       end
 
       it "prefers options" do
@@ -72,7 +80,7 @@ describe ROM::Kafka::Gateway do
   end # describe #hosts
 
   describe "#ack_timeout_ms" do
-    let(:gateway) { described_class.new(:producer, ack_timeout_ms: 1_000) }
+    let(:gateway) { described_class.new(*params, ack_timeout_ms: 1_000) }
 
     it "is initialized" do
       expect(gateway.ack_timeout_ms).to eql(1_000)
@@ -80,23 +88,15 @@ describe ROM::Kafka::Gateway do
   end # describe #ack_timeout_ms
 
   describe "#async" do
-    let(:gateway) { described_class.new(:producer, async: true) }
+    let(:gateway) { described_class.new(*params, async: true) }
 
     it "is initialized" do
       expect(gateway.async).to eql(true)
     end
-  end # descasyncout_ms
-
-  describe "#client" do
-    let(:gateway) { described_class.new(:producer, client: :foo) }
-
-    it "is initialized" do
-      expect(gateway.client).to eql(:foo)
-    end
-  end # descrclientut_ms
+  end # describe #async
 
   describe "#compression_codec" do
-    let(:gateway) { described_class.new(:producer, compression_codec: :gzip) }
+    let(:gateway) { described_class.new(*params, compression_codec: :gzip) }
 
     it "is initialized" do
       expect(gateway.compression_codec).to eql(:gzip)
@@ -104,15 +104,15 @@ describe ROM::Kafka::Gateway do
   end # describe #compression_codec
 
   describe "#max_bytes" do
-    let(:gateway) { described_class.new(:producer, max_bytes: 1_000) }
+    let(:gateway) { described_class.new(*params, max_bytes: 1_000) }
 
     it "is initialized" do
       expect(gateway.max_bytes).to eql(1_000)
     end
-  end # describemax_bytesms
+  end # describe #max_bytes
 
   describe "#max_send_retries" do
-    let(:gateway) { described_class.new(:producer, max_send_retries: 2) }
+    let(:gateway) { described_class.new(*params, max_send_retries: 2) }
 
     it "is initialized" do
       expect(gateway.max_send_retries).to eql(2)
@@ -120,7 +120,7 @@ describe ROM::Kafka::Gateway do
   end # describe #max_send_retries
 
   describe "#max_wait_ms" do
-    let(:gateway) { described_class.new(:producer, max_wait_ms: 2_000) }
+    let(:gateway) { described_class.new(*params, max_wait_ms: 2_000) }
 
     it "is initialized" do
       expect(gateway.max_wait_ms).to eql(2_000)
@@ -129,7 +129,7 @@ describe ROM::Kafka::Gateway do
 
   describe "#metadata_refresh_interval_ms" do
     let(:gateway) do
-      described_class.new(:producer, metadata_refresh_interval_ms: 600)
+      described_class.new(*params, metadata_refresh_interval_ms: 600)
     end
 
     it "is initialized" do
@@ -138,23 +138,23 @@ describe ROM::Kafka::Gateway do
   end # describe #metadata_refresh_interval_ms
 
   describe "#min_bytes" do
-    let(:gateway) { described_class.new(:producer, min_bytes: 1_024) }
+    let(:gateway) { described_class.new(*params, min_bytes: 1_024) }
 
     it "is initialized" do
       expect(gateway.min_bytes).to eql(1_024)
     end
-  end # describemin_bytesms
+  end # describe #min_bytesms
 
   describe "#port" do
-    let(:gateway) { described_class.new(:producer, port: 9093) }
+    let(:gateway) { described_class.new(*params, port: 9093) }
 
     it "is initialized" do
       expect(gateway.port).to eql(9093)
     end
-  end # desporteout_ms
+  end # describe #port
 
   describe "#required_acks" do
-    let(:gateway) { described_class.new(:producer, required_acks: 1) }
+    let(:gateway) { described_class.new(*params, required_acks: 1) }
 
     it "is initialized" do
       expect(gateway.required_acks).to eql(1)
@@ -162,7 +162,7 @@ describe ROM::Kafka::Gateway do
   end # describe #required_acks
 
   describe "#retry_backoff_ms" do
-    let(:gateway) { described_class.new(:producer, retry_backoff_ms: 200) }
+    let(:gateway) { described_class.new(*params, retry_backoff_ms: 200) }
 
     it "is initialized" do
       expect(gateway.retry_backoff_ms).to eql(200)
@@ -170,7 +170,7 @@ describe ROM::Kafka::Gateway do
   end # describe #retry_backoff_ms
 
   describe "#socket_timeout_ms" do
-    let(:gateway) { described_class.new(:producer, socket_timeout_ms: 1_000) }
+    let(:gateway) { described_class.new(*params, socket_timeout_ms: 1_000) }
 
     it "is initialized" do
       expect(gateway.socket_timeout_ms).to eql(1_000)
@@ -178,7 +178,7 @@ describe ROM::Kafka::Gateway do
   end # describe #socket_timeout_ms
 
   describe "#offset" do
-    let(:gateway) { described_class.new(:producer, offset: 1) }
+    let(:gateway) { described_class.new(*params, offset: 1) }
 
     it "is initialized" do
       expect(gateway.offset).to eql(1)
@@ -186,7 +186,7 @@ describe ROM::Kafka::Gateway do
   end # describe #offset
 
   describe "#partitioner" do
-    let(:gateway) { described_class.new(:producer, partitioner: partitioner) }
+    let(:gateway) { described_class.new(*params, partitioner: partitioner) }
     let(:partitioner) { double :partitioner }
 
     it "is initialized" do
@@ -228,7 +228,9 @@ describe ROM::Kafka::Gateway do
     before { allow(klass).to receive(:new) { dataset } }
 
     it "builds a dataset" do
-      expect(klass).to receive(:new).with(:producer, topic, gateway.attributes)
+      expect(klass)
+        .to receive(:new)
+        .with(*params, topic, gateway.attributes)
       subject
     end
 

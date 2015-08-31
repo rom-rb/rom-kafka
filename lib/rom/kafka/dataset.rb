@@ -26,6 +26,12 @@ module ROM::Kafka
     #
     attr_reader :role
 
+    # @!attribute [r] client
+    #
+    # @return [String] The id of Kafka client
+    #
+    attr_reader :client
+
     # @!attribute [r] topic
     #
     # @return [String] The name of the current topic
@@ -58,8 +64,9 @@ module ROM::Kafka
     #
     # @api private
     #
-    def initialize(role, topic, attributes, session = nil)
+    def initialize(role, client, topic, attributes, session = nil)
       @role = role
+      @client = client
       @topic = topic
       @attributes = attributes
       @session = session || Drivers.build(role, attributes.merge(topic: topic))
@@ -71,8 +78,8 @@ module ROM::Kafka
     #
     # @return [ROM::Kafka::Dataset]
     #
-    def update(options)
-      self.class.new(role, topic, attributes.merge(options), session)
+    def update(options, conn = session)
+      self.class.new(role, client, topic, attributes.merge(options), conn)
     end
 
     # Returns a new dataset with updated attributes and new session
@@ -83,7 +90,7 @@ module ROM::Kafka
     #
     def reset(options)
       session.close
-      self.class.new(role, topic, attributes.merge(options))
+      update(options, nil)
     end
 
     # Publishes messages to the Kafka brokers

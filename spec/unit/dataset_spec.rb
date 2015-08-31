@@ -2,8 +2,11 @@
 
 describe ROM::Kafka::Dataset do
 
-  let(:dataset)    { described_class.new role, topic, attributes }
+  let(:dataset)    { described_class.new(*params) }
+  let(:params)     { [role, client, topic, attributes] }
+
   let(:attributes) { { foo: :FOO, bar: :BAR } }
+  let(:client)     { :client_id }
   let(:topic)      { :qux }
   let(:role)       { :producer }
   let(:builder)    { ROM::Kafka::Drivers }
@@ -34,6 +37,14 @@ describe ROM::Kafka::Dataset do
     end
   end # describe #role
 
+  describe "#client" do
+    subject { dataset.client }
+
+    it "is initialized" do
+      expect(subject).to eql(client)
+    end
+  end # describe #client
+
   describe "#topic" do
     subject { dataset.topic }
 
@@ -46,7 +57,7 @@ describe ROM::Kafka::Dataset do
     subject { dataset.session }
 
     context "when the session is set" do
-      let(:dataset) { described_class.new role, topic, attributes, session }
+      let(:dataset) { described_class.new(*params, session) }
 
       it { is_expected.to eql session }
     end
@@ -79,16 +90,20 @@ describe ROM::Kafka::Dataset do
       expect(subject).to be_kind_of described_class
     end
 
-    it "updates attributes" do
-      expect(subject.attributes).to eql(updated_attributes)
+    it "preserves role" do
+      expect(subject.role).to eql(role)
+    end
+
+    it "preserves client" do
+      expect(subject.client).to eql(client)
     end
 
     it "preserves topic" do
       expect(subject.topic).to eql(topic)
     end
 
-    it "preserves role" do
-      expect(subject.role).to eql(role)
+    it "updates attributes" do
+      expect(subject.attributes).to eql(updated_attributes)
     end
 
     it "rebuilds the session" do
@@ -113,16 +128,20 @@ describe ROM::Kafka::Dataset do
       expect(subject).to be_kind_of described_class
     end
 
-    it "updates attributes" do
-      expect(subject.attributes).to eql(updated_attributes)
+    it "preserves role" do
+      expect(subject.role).to eql(role)
+    end
+
+    it "preserves client" do
+      expect(subject.client).to eql(client)
     end
 
     it "preserves topic" do
       expect(subject.topic).to eql(topic)
     end
 
-    it "preserves role" do
-      expect(subject.role).to eql(role)
+    it "updates attributes" do
+      expect(subject.attributes).to eql(updated_attributes)
     end
 
     it "doesn't rebuild the session" do

@@ -21,7 +21,6 @@ module ROM::Kafka
     # Attributes used by both producer and consumer
     attribute :hosts
     attribute :port, default: 9092
-    attribute :client
     attribute :partitioner
 
     # Producer-specific attributes
@@ -46,6 +45,12 @@ module ROM::Kafka
     #
     attr_reader :role
 
+    # @!attribute [r] client
+    #
+    # @return [#to_s] The id of the Kafka client
+    #
+    attr_reader :client
+
     # Initializes the gateway to Kafka with the role of client and
     # role-specific hash of attributes.
     #
@@ -57,6 +62,7 @@ module ROM::Kafka
     # @example Initialize a producer's gateway to Kafka
     #   gateway = Gateway.new(
     #     :producer,
+    #     :my_user,
     #     hosts: ["127.0.0.1", "127.0.0.2"],
     #     port: 9092,
     #     compression-codec: :gzip
@@ -65,6 +71,7 @@ module ROM::Kafka
     # @example Alternative syntax
     #   gateway = Gateway.new(
     #     :producer,
+    #     :my_user,
     #     "127.0.0.1:9092",
     #     "127.0.0.2:9092",
     #     compression-codec: :gzip
@@ -73,6 +80,7 @@ module ROM::Kafka
     # @example Initialize a consumer's gateway to Kafka
     #   gateway = Gateway.new(
     #     :consumer,
+    #     :my_user,
     #     "127.0.0.1",
     #     port: 9092,
     #     min_bytes: 1024 # wait until 1Kb of messages is prepared
@@ -80,6 +88,8 @@ module ROM::Kafka
     #
     # @param [:consumer, :producer] role
     #   The role of the Kafka client
+    # @param [String] client
+    #   An id used to indentify the client (either producer or consumer).
     # @param [Hash] attributes
     #   The list of attributes, that is different for producer and consumer
     #
@@ -88,8 +98,6 @@ module ROM::Kafka
     #   In case of a consumer, only the first host is actually used.
     # @option attributes [Integer] :port
     #   The port shared by all hosts.
-    # @option attributes [String] :client
-    #   A client_id used to indentify the client (either producer or consumer).
     # @option atttributes [Proc, nil] :partitioner
     #   A proc used to provide partition from given key.
     #
@@ -122,9 +130,10 @@ module ROM::Kafka
     #   How long to block until the server sends data.
     #   NOTE: This is only enforced if min_bytes is > 0.
     #
-    def initialize(role, *options)
-      super extract_attributes(options)
+    def initialize(role, client, *attributes)
+      super extract_attributes(attributes)
       @role     = role
+      @client   = client
       @datasets = {}
     end
 
@@ -145,7 +154,7 @@ module ROM::Kafka
     # @return [self] itself
     #
     def dataset(topic)
-      @datasets[topic.to_sym] = Dataset.new(role, topic, attributes)
+      @datasets[topic.to_sym] = Dataset.new(role, client, topic, attributes)
       self
     end
 
