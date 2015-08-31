@@ -20,24 +20,43 @@ module ROM::Kafka
 
     adapter :kafka
 
-    # Returns the new relation where dataset is updated with given options
+    # Returns the new relation where dataset is updated with given attributes
     #
-    # @param [Hash] options
+    # @option attributes [Integer] :max_bytes
+    # @option attributes [Integer] :min_bytes
+    # @option attributes [Integer] :max_wait_ms
     #
     # @return [ROM::Kafka::Relation]
     #
-    def using(options)
-      self.class.new dataset.using(options)
+    def using(attributes)
+      reload(attributes, :max_bytes, :min_bytes, :max_wait_ms)
     end
 
-    # Returns the new relation where dataset is updated with given offset
+    # Returns the new relation with updated offset attribute
     #
     # @param [Integer] value
     #
     # @return [ROM::Kafka::Relation]
     #
     def offset(value)
-      using(offset: value)
+      reload({ offset: value }, :offset)
+    end
+
+    # Returns the new relation with updated partition to fetch messages from
+    #
+    # @option attributes [Integer] :partition
+    #
+    # @return [ROM::Kafka::Relation]
+    #
+    def where(attributes)
+      reload(attributes, :key, :partition)
+    end
+
+    private
+
+    def reload(options, *keys)
+      attributes = options.select { |key| keys.include? key }
+      self.class.new dataset.using(attributes)
     end
 
   end # class Relation

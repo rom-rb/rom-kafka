@@ -25,15 +25,15 @@ describe ROM::Kafka::Relation do
   end # describe #dataset
 
   describe "#using" do
-    subject { relation.using(options) }
+    subject { relation.using(options.merge(foo: :bar)) }
 
-    let(:options) { { foo: :FOO, bar: :BAR } }
+    let(:options) { { max_bytes: 100, min_bytes: 100, max_wait_ms: 100 } }
 
     it "returns a relation" do
       expect(subject).to be_kind_of described_class
     end
 
-    it "updates the dataset" do
+    it "updates the dataset with allowed options only" do
       expect(dataset).to receive(:using).with(options)
       expect(subject.dataset).to eql(updated_dataset)
     end
@@ -53,5 +53,18 @@ describe ROM::Kafka::Relation do
       expect(subject.dataset).to eql(updated_dataset)
     end
   end # describe #offset
+
+  describe "#where" do
+    subject { relation.where(key: :foo, partition: 3, foo: :bar) }
+
+    it "returns a relation" do
+      expect(subject).to be_kind_of described_class
+    end
+
+    it "updates the dataset with key and partition" do
+      expect(dataset).to receive(:using).with(key: :foo, partition: 3)
+      expect(subject.dataset).to eql(updated_dataset)
+    end
+  end # describe #where
 
 end # describe ROM::Kafka::Relation
