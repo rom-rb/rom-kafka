@@ -18,6 +18,7 @@ describe ROM::Kafka::Gateway do
         ack_timeout_ms: 1_500,
         async: false,
         client: nil,
+        partitioner: nil,
         compression_codec: nil,
         hosts: [],
         max_bytes: 1_048_576,
@@ -174,6 +175,15 @@ describe ROM::Kafka::Gateway do
       expect(gateway.socket_timeout_ms).to eql(1_000)
     end
   end # describe #socket_timeout_ms
+
+  describe "#partitioner" do
+    let(:gateway) { described_class.new(:producer, partitioner: partitioner) }
+    let(:partitioner) { double :partitioner }
+
+    it "is initialized" do
+      expect(gateway.partitioner).to eql(partitioner)
+    end
+  end # describe #partitioner
 
   describe "#[]" do
     subject { gateway[:foo] }

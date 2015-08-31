@@ -22,6 +22,7 @@ module ROM::Kafka
     attribute :hosts
     attribute :port, default: 9092
     attribute :client
+    attribute :partitioner
 
     # Producer-specific attributes
     attribute :async, default: false
@@ -88,6 +89,8 @@ module ROM::Kafka
     #   The port shared by all hosts.
     # @option attributes [String] :client
     #   A client_id used to indentify the client (either producer or consumer).
+    # @option atttributes [Proc, nil] :partitioner
+    #   A proc used to provide partition from given key.
     #
     # @option attributes [Boolean] :async (false)
     #   Whether messages should be quered and sent in the background.
