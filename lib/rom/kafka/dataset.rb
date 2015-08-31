@@ -110,6 +110,14 @@ module ROM::Kafka
       session.fetch(attributes).each
     end
 
+    # Returns the next offset for the consumer
+    #
+    # @return [Integer]
+    #
+    def next_offset
+      session.next_offset
+    end
+
   end # class Dataset
 
 end # module ROM::Kafka

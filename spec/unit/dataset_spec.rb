@@ -151,4 +151,13 @@ describe ROM::Kafka::Dataset do
     end
   end # describe #publish
 
+  describe "#next_offset" do
+    subject { dataset.next_offset }
+
+    it "is delegated to #session" do
+      expect(session).to receive(:next_offset)
+      expect(subject).to eql 3
+    end
+  end # describe #next_offset
+
 end # describe ROM::Kafka::Dataset
