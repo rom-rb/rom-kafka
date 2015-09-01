@@ -13,10 +13,10 @@ module ROM::Kafka
   #   end
   #
   #   rom = ROM.finalize.env
-  #   rom.relation(:users).using(max_wait_ms: 100).where(partition: 1).to_a
+  #   users = rom.relation(:users)
+  #   users.where(partition: 1).offset(0).limit(1).to_a
   #   # => [
-  #   #      { value: "something", topic: "users", partition: 1, offset: 0 },
-  #   #      # ...
+  #   #      { value: "Andrew", topic: "users", partition: 1, offset: 0 }
   #   #    ]
   #
   class Relation < ROM::Relation
@@ -33,42 +33,45 @@ module ROM::Kafka
       dataset(name)
     end
 
-    # Returns new relation where dataset is updated with given attributes
-    #
-    # @option attributes [Integer] :max_bytes
-    # @option attributes [Integer] :min_bytes
-    # @option attributes [Integer] :max_wait_ms
-    #
-    # @return [ROM::Kafka::Relation]
-    #
-    def using(attributes)
-      allowed = [:max_bytes, :min_bytes, :max_wait_ms]
-      options = attributes.select { |key| allowed.include? key }
-
-      self.class.new dataset.update(options)
-    end
-
-    # Returns new relation with updated offset attribute
+    # Returns new relation with updated `:offset` attribute
     #
     # @param [Integer] value
     #
     # @return [ROM::Kafka::Relation]
     #
     def offset(value)
-      self.class.new dataset.reset(offset: value)
+      using(offset: value)
     end
 
-    # Returns new relation with updated partition to fetch messages from
+    # Returns new relation with updated `:limit` attribute
+    #
+    # @param [Integer] value
+    #
+    # @return [ROM::Kafka::Relation]
+    #
+    def limit(value)
+      using(limit: value)
+    end
+
+    # Returns new relation with updated partition or key to fetch messages from
     #
     # @option attributes [Integer] :partition
+    # @option attributes [#to_s] :key
     #
     # @return [ROM::Kafka::Relation]
     #
     def where(attributes)
-      allowed = [:key, :partition]
-      options = attributes.select { |key| allowed.include? key }
+      using attributes.select { |key| [:key, :partition].include? key }
+    end
 
-      self.class.new dataset.reset(options)
+    # Returns new relation where dataset is updated with given attributes
+    #
+    # @param [Hash] attributes
+    #
+    # @return [ROM::Kafka::Relation]
+    #
+    def using(attributes)
+      self.class.new dataset.using(attributes)
     end
 
   end # class Relation

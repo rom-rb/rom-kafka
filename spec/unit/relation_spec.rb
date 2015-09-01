@@ -3,10 +3,8 @@
 describe ROM::Kafka::Relation do
 
   let(:relation) { described_class.new dataset }
-  let(:updated_dataset) { double :updated_dataset }
-  let(:dataset) do
-    double :dataset, update: updated_dataset, reset: updated_dataset
-  end
+  let(:dataset)  { double :dataset, using: updated }
+  let(:updated)  { double :updated }
 
   describe ".adapter" do
     subject { described_class.adapter }
@@ -38,34 +36,49 @@ describe ROM::Kafka::Relation do
   end # describe #dataset
 
   describe "#using" do
-    subject { relation.using(options.merge(foo: :bar)) }
+    subject { relation.using(options) }
 
-    let(:options) { { max_bytes: 100, min_bytes: 100, max_wait_ms: 100 } }
+    let(:options) { { foo: :bar, baz: :qux } }
 
     it "returns a relation" do
       expect(subject).to be_kind_of described_class
     end
 
-    it "updates the dataset with allowed options only" do
-      expect(dataset).to receive(:update).with(options)
-      expect(subject.dataset).to eql(updated_dataset)
+    it "updates a dataset" do
+      expect(dataset).to receive(:using).with(options)
+      expect(subject.dataset).to eql(updated)
     end
   end # describe #using
 
   describe "#offset" do
     subject { relation.offset(value) }
 
-    let(:value) { 101 }
+    let(:value) { 5 }
 
     it "returns a relation" do
       expect(subject).to be_kind_of described_class
     end
 
     it "updates the dataset with given offset" do
-      expect(dataset).to receive(:reset).with(offset: value)
-      expect(subject.dataset).to eql(updated_dataset)
+      expect(dataset).to receive(:using).with(offset: value)
+      expect(subject.dataset).to eql(updated)
     end
   end # describe #offset
+
+  describe "#limit" do
+    subject { relation.limit(value) }
+
+    let(:value) { 3 }
+
+    it "returns a relation" do
+      expect(subject).to be_kind_of described_class
+    end
+
+    it "updates the dataset with given limit" do
+      expect(dataset).to receive(:using).with(limit: value)
+      expect(subject.dataset).to eql(updated)
+    end
+  end # describe #limit
 
   describe "#where" do
     subject { relation.where(key: :foo, partition: 3, foo: :bar) }
@@ -75,8 +88,8 @@ describe ROM::Kafka::Relation do
     end
 
     it "updates the dataset with key and partition" do
-      expect(dataset).to receive(:reset).with(key: :foo, partition: 3)
-      expect(subject.dataset).to eql(updated_dataset)
+      expect(dataset).to receive(:using).with(key: :foo, partition: 3)
+      expect(subject.dataset).to eql(updated)
     end
   end # describe #where
 
