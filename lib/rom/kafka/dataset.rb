@@ -49,6 +49,7 @@ module ROM::Kafka
     # @param [#to_s] role
     # @param [#to_s] client
     # @param [#to_s] topic
+    # @param [Hash] attributes
     #
     # @option (see ROM::Kafka::Gateway)
     #

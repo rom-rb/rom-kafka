@@ -22,7 +22,8 @@ module ROM::Kafka
     #   end
     #
     #   rom = ROM.finalize.env
-    #   rom.commands(:users).greet.where(partition: 1).call "Hi!"
+    #   greet = rom.commands(:users).greet
+    #   greet.where(partition: 1).call "Hi!"
     #   # => [{ value: "Hi!", topic: "users", key: "users", offset: 10 }]
     #
     class Create < ROM::Commands::Create
