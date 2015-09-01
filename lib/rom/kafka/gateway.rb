@@ -34,7 +34,6 @@ module ROM::Kafka
     attribute :socket_timeout_ms, default: 10_000
 
     # Consumer-specific attributes
-    attribute :offset, default: 0
     attribute :min_bytes, default: 1
     attribute :max_bytes, default: 1_048_576
     attribute :max_wait_ms, default: 100
