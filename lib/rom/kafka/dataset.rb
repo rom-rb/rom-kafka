@@ -44,32 +44,21 @@ module ROM::Kafka
     #
     attr_reader :attributes
 
-    # @!attribute [r] session
-    #
-    # @return [ROM::Kafka::Drivers::Base] the current session to Kafka
-    #
-    attr_reader :session
-
     # Initializes a partition with topic and attributes from the gateway.
     #
+    # @param [#to_s] role
+    # @param [#to_s] client
     # @param [#to_s] topic
     #
     # @option (see ROM::Kafka::Gateway)
-    # @option attributes [:producer, :consumer] :role
-    #   The role of Kafka client
-    # @option attributes [#to_s] :key
-    #   The partition key
-    # @option attributes [Integer] :offset
-    #   The default offset (to be used by a consumer only)
     #
     # @api private
     #
-    def initialize(role, client, topic, attributes, session = nil)
+    def initialize(role, client, topic, attributes)
       @role = role
       @client = client
       @topic = topic
       @attributes = attributes
-      @session = session || Drivers.build(role, attributes.merge(topic: topic))
     end
 
     # Returns a new dataset with updated attributes and the same session
@@ -78,19 +67,8 @@ module ROM::Kafka
     #
     # @return [ROM::Kafka::Dataset]
     #
-    def update(options, conn = session)
-      self.class.new(role, client, topic, attributes.merge(options), conn)
-    end
-
-    # Returns a new dataset with updated attributes and new session
-    #
-    # @param [Hash] options The part of attributes to be updated
-    #
-    # @return [ROM::Kafka::Dataset]
-    #
-    def reset(options)
-      session.close
-      update(options, nil)
+    def using(options)
+      self.class.new(role, client, topic, attributes.merge(options))
     end
 
     # Publishes messages to the Kafka brokers
@@ -117,12 +95,10 @@ module ROM::Kafka
       session.fetch(attributes).each
     end
 
-    # Returns the next offset for the consumer
-    #
-    # @return [Integer]
-    #
-    def next_offset
-      session.next_offset
+    private
+
+    def session
+      Drivers.build(role, attributes.merge(topic: topic, client_id: client))
     end
 
   end # class Dataset
