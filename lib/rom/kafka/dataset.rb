@@ -93,7 +93,7 @@ module ROM::Kafka
     # @return [Enumerator<Hash>]
     #
     def each
-      session.fetch(attributes).each
+      session.each
     end
 
     private

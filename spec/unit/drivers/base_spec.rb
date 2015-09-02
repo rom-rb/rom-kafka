@@ -24,7 +24,7 @@ describe ROM::Kafka::Drivers::Base do
   end # describe #each
 
   describe "#publish" do
-    subject { session.publish(value: "Hi", topic: "logs", key: "greetings") }
+    subject { session.publish("Hi!", "Hello!") }
 
     it "raises NotImplementedError" do
       expect { subject }.to raise_error do |error|

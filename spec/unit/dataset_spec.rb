@@ -8,9 +8,9 @@ describe ROM::Kafka::Dataset do
   let(:topic)      { :qux }
   let(:role)       { :producer }
   let(:builder)    { ROM::Kafka::Drivers }
-  let(:fetch)      { double :fetch, each: :enumerable }
+  let(:fetch)      { double :fetch }
   let(:session) do
-    double :session, fetch: fetch, publish: nil, close: nil, next_offset: 3
+    double :session, each: fetch, publish: nil, close: nil, next_offset: 3
   end
 
   before { allow(builder).to receive(:build) { session } }
@@ -72,9 +72,8 @@ describe ROM::Kafka::Dataset do
       subject
     end
 
-    it "is delegated to session#fetch" do
-      expect(session).to receive(:fetch).with(attributes)
-      expect(subject).to eql fetch.each
+    it "is delegated to session" do
+      expect(subject).to eql fetch
     end
   end # describe #each
 
