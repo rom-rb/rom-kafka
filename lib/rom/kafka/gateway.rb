@@ -19,8 +19,7 @@ module ROM::Kafka
     include DSL::Attributes
 
     # Attributes used by both producer and consumer
-    attribute :hosts, default: ["localhost"]
-    attribute :port, default: 9092
+    attribute :brokers, default: ["localhost:9092"]
     attribute :partitioner
 
     # Producer-specific attributes
@@ -130,7 +129,7 @@ module ROM::Kafka
     #   NOTE: This is only enforced if min_bytes is > 0.
     #
     def initialize(role, client, *attributes)
-      super extract_attributes(attributes)
+      super Functions.brokerize(attributes)
       @role     = role
       @client   = client
       @datasets = {}
@@ -165,13 +164,6 @@ module ROM::Kafka
     #
     def dataset?(topic)
       self[topic] ? true : false
-    end
-
-    private
-
-    def extract_attributes(options)
-      attributes = options.last.instance_of?(Hash) ? options.pop : {}
-      options.any? ? { hosts: options }.merge(attributes) : attributes
     end
 
   end # class Gateway

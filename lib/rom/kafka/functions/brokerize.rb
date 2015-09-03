@@ -6,14 +6,12 @@ module ROM::Kafka
 
     class << self
 
-      # Extracts hash urls settings (hosts and port) from <gateway> params
+      # Converts hosts and port settings into array of `:brokers`.
       #
       # @example
-      #   fn = Functions[:prepare_urls]
+      #   fn = Functions[:brokerize]
       #   fn["127.0.0.1:9092", hosts: ["127.0.0.2"], port: 9093, offset: 1]
       #   # => {
-      #   #      host: "127.0.0.1",
-      #   #      port: 9092,
       #   #      brokers: ["127.0.0.1:9092", "127.0.0.2:9093"],
       #   #      offset: 1
       #   #    }
@@ -22,13 +20,12 @@ module ROM::Kafka
       #
       # @return [Hash]
       #
-      def prepare_urls(*params)
-        opts = hashify params.flatten
-        urls = extract_urls(opts)
-        url  = urls.first || {}
+      def brokerize(*params)
+        opts    = hashify params.flatten
+        brokers = extract_brokers(opts)
+        brokers = ["localhost:9092"] if brokers.empty?
 
-        opts.delete(:hosts)
-        opts.merge(url).merge(brokers: urls.map { |url| url.values.join(":") })
+        opts.merge(brokers: brokers).reject { |k| [:hosts, :port].include? k }
       end
 
       private
@@ -42,11 +39,9 @@ module ROM::Kafka
         hash
       end
 
-      def extract_urls(hash)
+      def extract_brokers(hash)
         port = hash[:port]
-        hash[:hosts].map do |item|
-          { host: item[HOST], port: (item[PORT] || port).to_i }
-        end
+        hash[:hosts].map { |item| [item[HOST], (item[PORT] || port)].join(":") }
       end
 
     end # eigenclass

@@ -10,7 +10,7 @@ module ROM::Kafka
 
     extend Transproc::Registry
 
-    require_relative "functions/prepare_urls"
+    require_relative "functions/brokerize"
 
   end # module Functions
 

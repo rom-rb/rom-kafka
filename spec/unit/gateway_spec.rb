@@ -19,14 +19,13 @@ describe ROM::Kafka::Gateway do
         ack_timeout_ms: 1_500,
         async: false,
         compression_codec: nil,
-        hosts: ["localhost"],
+        brokers: ["localhost:9092"],
         max_bytes: 1_048_576,
         max_send_retries: 3,
         max_wait_ms: 100,
         metadata_refresh_interval_ms: 600_000,
         min_bytes: 1,
         partitioner: nil,
-        port: 9092,
         required_acks: 0,
         retry_backoff_ms: 100,
         socket_timeout_ms: 10_000
@@ -50,31 +49,32 @@ describe ROM::Kafka::Gateway do
     end
   end # describe #client
 
-  describe "#hosts" do
-    subject { gateway.hosts }
+  describe "#brokers" do
+    subject { gateway.brokers }
 
-    let(:hosts) { %w(localhost:9092 127.0.0.1) }
+    let(:brokers) { %w(localhost:9092 127.0.0.1:9092) }
 
     context "from string" do
-      let(:gateway) { described_class.new(*params, *hosts) }
+      let(:gateway) { described_class.new(*params, *brokers) }
 
-      it { is_expected.to eql hosts }
+      it { is_expected.to eql brokers }
     end
 
     context "from the hosts option" do
-      let(:gateway) { described_class.new(*params, hosts: hosts) }
+      let(:gateway) do
+        described_class.new(*params, hosts: %w(localhost 127.0.0.1), port: 9092)
+      end
 
-      it { is_expected.to eql hosts }
+      it { is_expected.to eql brokers }
     end
 
     context "from mixed attributes" do
       let(:gateway) do
-        described_class.new(*params, "127.0.0.1:9092", hosts: hosts)
+        described_class
+          .new(*params, "localhost", hosts: %w(127.0.0.1), port: 9092)
       end
 
-      it "prefers options" do
-        expect(subject).to eql hosts
-      end
+      it { is_expected.to eql brokers }
     end
   end # describe #hosts
 
@@ -143,14 +143,6 @@ describe ROM::Kafka::Gateway do
       expect(gateway.min_bytes).to eql(1_024)
     end
   end # describe #min_bytesms
-
-  describe "#port" do
-    let(:gateway) { described_class.new(*params, port: 9093) }
-
-    it "is initialized" do
-      expect(gateway.port).to eql(9093)
-    end
-  end # describe #port
 
   describe "#required_acks" do
     let(:gateway) { described_class.new(*params, required_acks: 1) }
