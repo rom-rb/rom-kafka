@@ -51,14 +51,14 @@ module ROM::Kafka
         @attributes = default.merge assigned
       end
 
-      # Returns the subhash of attributes by their names
+      # Returns a subhash of attributes, except for the given ones
       #
       # @param [Array<Symbol>] names
       #
       # @return [Hash]
       #
-      def slice(*names)
-        attributes.select { |name| names.include? name }
+      def attr_blacklist(*names)
+        attributes.reject { |key| names.include? key }
       end
 
       # @private

@@ -61,17 +61,17 @@ describe ROM::Kafka::DSL::Attributes do
     end
   end # describe #attributes
 
-  describe "#slice" do
-    subject { object.slice :bar, :baz, :qux }
+  describe "#attr_blacklist" do
+    subject { object.attr_blacklist :foo, :baz }
 
     before { klass.attribute :foo, default: :FOO }
     before { klass.attribute :bar, default: :BAR }
     before { klass.attribute :baz, default: :BAZ }
 
     it "returns subhash of attributes" do
-      expect(subject).to eql(bar: :BAR, baz: :BAZ)
+      expect(subject).to eql(bar: :BAR)
     end
-  end
+  end # describe #attr_blacklist
 
   describe ".new" do
     subject { klass.new(foo: :QUX, baz: :BAZ) }
