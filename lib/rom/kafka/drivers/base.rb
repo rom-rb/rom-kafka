@@ -12,7 +12,7 @@ module ROM::Kafka
     #
     class Base
 
-      include DSL::Attributes
+      extend AttributesDSL
       include Enumerable
 
       # Reads message(s) from Kafka.

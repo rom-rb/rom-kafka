@@ -24,6 +24,7 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency "rom", "~> 0.8"
   gem.add_runtime_dependency "poseidon", "~> 0.0.3"
+  gem.add_runtime_dependency "attributes_dsl", "~> 0.0"
 
   gem.add_development_dependency "hexx-rspec", "~> 0.5"
   gem.add_development_dependency "timecop", "~> 0.8"

@@ -7,7 +7,6 @@ describe ROM::Kafka::Drivers::Base do
   describe "#new" do
     subject { session }
 
-    it { is_expected.to be_kind_of ROM::Kafka::DSL::Attributes }
     it { is_expected.to be_kind_of Enumerable }
   end # describe #new
 

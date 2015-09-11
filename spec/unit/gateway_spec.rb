@@ -5,12 +5,6 @@ describe ROM::Kafka::Gateway do
   let(:gateway) { described_class.new(*params) }
   let(:params)  { [:producer, :baz] }
 
-  describe ".new" do
-    subject { described_class.new(*params, {}) }
-
-    it { is_expected.to be_kind_of ROM::Kafka::DSL::Attributes }
-  end # describe .new
-
   describe "#attributes" do
     subject { gateway.attributes }
 

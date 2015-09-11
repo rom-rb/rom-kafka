@@ -16,7 +16,7 @@ module ROM::Kafka
   #
   class Gateway < ROM::Gateway
 
-    include DSL::Attributes
+    extend AttributesDSL
 
     # Attributes used by both producer and consumer
     attribute :brokers, default: ["localhost:9092"]
