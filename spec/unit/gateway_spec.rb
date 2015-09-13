@@ -2,174 +2,103 @@
 
 describe ROM::Kafka::Gateway do
 
-  let(:gateway) { described_class.new(*params) }
-  let(:params)  { [:producer, :baz] }
+  let(:gateway) { described_class.new(client_id: :foo) }
 
-  describe "#attributes" do
-    subject { gateway.attributes }
+  describe ".new" do
+    context "without client id" do
+      subject { gateway }
 
-    it "returns default settings" do
-      expect(subject).to eql(
-        ack_timeout_ms: 1_500,
-        async: false,
-        compression_codec: nil,
-        brokers: ["localhost:9092"],
-        max_bytes: 1_048_576,
-        max_send_retries: 3,
-        max_wait_ms: 100,
-        metadata_refresh_interval_ms: 600_000,
-        min_bytes: 1,
-        partitioner: nil,
-        required_acks: 0,
-        retry_backoff_ms: 100,
-        socket_timeout_ms: 10_000
-      )
+      it { is_expected.to be_kind_of ROM::Gateway }
     end
-  end # describe #attributes
 
-  describe "#role" do
-    subject { gateway.role }
+    context "without client id" do
+      subject { described_class.new }
 
-    it "is initialized" do
-      expect(subject).to eql(:producer)
+      it "fails" do
+        expect { subject }.to raise_error ArgumentError
+      end
     end
-  end # describe #role
-
-  describe "#client" do
-    subject { gateway.client }
-
-    it "is initialized" do
-      expect(subject).to eql(:baz)
-    end
-  end # describe #client
+  end # describe .new
 
   describe "#brokers" do
     subject { gateway.brokers }
 
     let(:brokers) { %w(localhost:9092 127.0.0.1:9092) }
 
-    context "from string" do
-      let(:gateway) { described_class.new(*params, *brokers) }
+    context "from strings" do
+      let(:gateway) { described_class.new(*brokers, client_id: :foo) }
 
       it { is_expected.to eql brokers }
     end
 
-    context "from the hosts option" do
+    context "from hosts and port options" do
       let(:gateway) do
-        described_class.new(*params, hosts: %w(localhost 127.0.0.1), port: 9092)
+        described_class
+          .new(client_id: :foo, hosts: %w(localhost 127.0.0.1), port: 9092)
       end
 
       it { is_expected.to eql brokers }
     end
 
-    context "from mixed attributes" do
+    context "from mixed options" do
       let(:gateway) do
         described_class
-          .new(*params, "localhost", hosts: %w(127.0.0.1), port: 9092)
+          .new("localhost", client_id: :foo, hosts: %w(127.0.0.1), port: 9092)
       end
 
       it { is_expected.to eql brokers }
     end
   end # describe #hosts
 
-  describe "#ack_timeout_ms" do
-    let(:gateway) { described_class.new(*params, ack_timeout_ms: 1_000) }
+  describe "#attributes" do
+    subject { gateway.attributes }
 
-    it "is initialized" do
-      expect(gateway.ack_timeout_ms).to eql(1_000)
-    end
-  end # describe #ack_timeout_ms
+    context "by default" do
+      let(:attributes) { { client_id: :foo } }
 
-  describe "#async" do
-    let(:gateway) { described_class.new(*params, async: true) }
-
-    it "is initialized" do
-      expect(gateway.async).to eql(true)
-    end
-  end # describe #async
-
-  describe "#compression_codec" do
-    let(:gateway) { described_class.new(*params, compression_codec: :gzip) }
-
-    it "is initialized" do
-      expect(gateway.compression_codec).to eql(:gzip)
-    end
-  end # describe #compression_codec
-
-  describe "#max_bytes" do
-    let(:gateway) { described_class.new(*params, max_bytes: 1_000) }
-
-    it "is initialized" do
-      expect(gateway.max_bytes).to eql(1_000)
-    end
-  end # describe #max_bytes
-
-  describe "#max_send_retries" do
-    let(:gateway) { described_class.new(*params, max_send_retries: 2) }
-
-    it "is initialized" do
-      expect(gateway.max_send_retries).to eql(2)
-    end
-  end # describe #max_send_retries
-
-  describe "#max_wait_ms" do
-    let(:gateway) { described_class.new(*params, max_wait_ms: 2_000) }
-
-    it "is initialized" do
-      expect(gateway.max_wait_ms).to eql(2_000)
-    end
-  end # describe #max_wait_ms
-
-  describe "#metadata_refresh_interval_ms" do
-    let(:gateway) do
-      described_class.new(*params, metadata_refresh_interval_ms: 600)
+      it "is set" do
+        expect(subject).to eql(
+          ack_timeout_ms: 1_500,
+          brokers: ["localhost:9092"],
+          client_id: "foo",
+          compression_codec: nil,
+          max_bytes: 1_048_576,
+          max_send_retries: 3,
+          max_wait_ms: 100,
+          metadata_refresh_interval_ms: 600_000,
+          min_bytes: 1,
+          partitioner: nil,
+          required_acks: 0,
+          retry_backoff_ms: 100,
+          socket_timeout_ms: 10_000
+        )
+      end
     end
 
-    it "is initialized" do
-      expect(gateway.metadata_refresh_interval_ms).to eql(600)
+    context "when assigned" do
+      let(:gateway) { described_class.new(attributes) }
+
+      let(:attributes) do
+        {
+          ack_timeout_ms: 200,
+          brokers: ["localhost:9092"],
+          client_id: "foo",
+          compression_codec: :gzip,
+          max_bytes: 2_048,
+          max_send_retries: 2,
+          max_wait_ms: 300,
+          metadata_refresh_interval_ms: 300_000,
+          min_bytes: 1_024,
+          partitioner: proc { |value, count| value % count },
+          required_acks: 1,
+          retry_backoff_ms: 200,
+          socket_timeout_ms: 20_000
+        }
+      end
+
+      it { is_expected.to eql attributes }
     end
-  end # describe #metadata_refresh_interval_ms
-
-  describe "#min_bytes" do
-    let(:gateway) { described_class.new(*params, min_bytes: 1_024) }
-
-    it "is initialized" do
-      expect(gateway.min_bytes).to eql(1_024)
-    end
-  end # describe #min_bytesms
-
-  describe "#required_acks" do
-    let(:gateway) { described_class.new(*params, required_acks: 1) }
-
-    it "is initialized" do
-      expect(gateway.required_acks).to eql(1)
-    end
-  end # describe #required_acks
-
-  describe "#retry_backoff_ms" do
-    let(:gateway) { described_class.new(*params, retry_backoff_ms: 200) }
-
-    it "is initialized" do
-      expect(gateway.retry_backoff_ms).to eql(200)
-    end
-  end # describe #retry_backoff_ms
-
-  describe "#socket_timeout_ms" do
-    let(:gateway) { described_class.new(*params, socket_timeout_ms: 1_000) }
-
-    it "is initialized" do
-      expect(gateway.socket_timeout_ms).to eql(1_000)
-    end
-  end # describe #socket_timeout_ms
-
-  describe "#partitioner" do
-    let(:gateway) { described_class.new(*params, partitioner: partitioner) }
-    let(:partitioner) { double :partitioner }
-
-    it "is initialized" do
-      expect(gateway.partitioner).to eql(partitioner)
-    end
-  end # describe #partitioner
+  end # describe #attributes
 
   describe "#[]" do
     subject { gateway[:foo] }
@@ -205,9 +134,7 @@ describe ROM::Kafka::Gateway do
     before { allow(klass).to receive(:new) { dataset } }
 
     it "builds a dataset" do
-      expect(klass)
-        .to receive(:new)
-        .with(*params, topic, gateway.attributes)
+      expect(klass).to receive(:new).with(gateway, topic)
       subject
     end
 
@@ -223,5 +150,22 @@ describe ROM::Kafka::Gateway do
       expect(subject).to eql(gateway)
     end
   end # describe #dataset
+
+  describe "#producer" do
+    subject { gateway.producer }
+    let(:producer) { double :producer }
+
+    it "builds a producer" do
+      attributes = {}
+      producer   = double :producer
+
+      expect(ROM::Kafka::Connection::Producer).to receive(:new) do |opts|
+        attributes = opts
+        producer
+      end
+      expect(subject).to eql producer
+      expect(attributes).to eql gateway.attributes
+    end
+  end # describe #producer
 
 end # describe ROM::Kafka::Gateway
