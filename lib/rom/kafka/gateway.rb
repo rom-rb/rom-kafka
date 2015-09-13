@@ -20,8 +20,8 @@ module ROM::Kafka
     extend AttributesDSL
 
     # Attributes used by both producer and consumer
-    attribute :brokers, default: ["localhost:9092"]
     attribute :client_id, required: true, &:to_s
+    attribute :brokers
 
     # Producer-specific attributes
     attribute :partitioner
@@ -113,7 +113,8 @@ module ROM::Kafka
     #   NOTE: This is only enforced if min_bytes is > 0.
     #
     def initialize(*addresses, **options)
-      super Functions.brokerize(addresses, options)
+      brokers = Brokers.new(addresses, options).to_a
+      super options.merge(brokers: brokers) # prepares #attributes
 
       @producer = Connection::Producer.new(attributes)
       @datasets = {}

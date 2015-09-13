@@ -16,7 +16,6 @@ module ROM
   module Kafka
 
     require_relative "kafka/brokers"
-    require_relative "kafka/functions" # @todo: to be removed later
     require_relative "kafka/drivers" # @todo: to be removed later
     require_relative "kafka/connection"
     require_relative "kafka/dataset"

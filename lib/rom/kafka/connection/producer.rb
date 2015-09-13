@@ -11,7 +11,7 @@ module ROM::Kafka
     # methods.
     #
     # ROM::Kafka producer deals with tuples, hiding poseidon-specific
-    # implementation of fetched messages from the rest of the gem.
+    # implementation of messages from the rest of the gem.
     #
     # @api private
     #
