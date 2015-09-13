@@ -1,7 +1,7 @@
 # encoding: utf-8
-require "rom"
-require "poseidon"
 require "attributes_dsl"
+require "poseidon"
+require "rom"
 
 # Ruby Object Mapper
 #
@@ -16,8 +16,8 @@ module ROM
   module Kafka
 
     require_relative "kafka/functions"
-    require_relative "kafka/drivers"
-
+    require_relative "kafka/drivers" # @todo: to be removed later
+    require_relative "kafka/connection"
     require_relative "kafka/dataset"
     require_relative "kafka/gateway"
     require_relative "kafka/relation"
