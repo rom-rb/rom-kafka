@@ -2,11 +2,10 @@
 
 module ROM::Kafka
 
-  # Describes the connection to Kafka broker(s)
+  # Describes the connection to Kafka cluster
   #
   # This is a base abstract class for producer and concumer connections.
   #
-  # @abstract
   # @api private
   #
   # @author Andrew Kozin <Andrew.Kozin@gmail.com>
@@ -16,6 +15,7 @@ module ROM::Kafka
     extend AttributesDSL
 
     require_relative "connection/producer"
+    require_relative "connection/consumer"
 
   end # class Connection
 
