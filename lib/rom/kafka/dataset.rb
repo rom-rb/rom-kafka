@@ -69,7 +69,7 @@ module ROM::Kafka
     #   How long to block until the server sends data.
     #   NOTE: This is only enforced if min_bytes is > 0.
     #
-    def initialize(gateway, topic, **options)
+    def initialize(gateway, topic, options = {})
       super gateway.attributes.merge(options)
       @topic    = topic
       @gateway  = gateway

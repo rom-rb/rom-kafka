@@ -45,7 +45,7 @@ module ROM::Kafka
       # @option options [#to_s] :host ("localhost")
       # @option options [#to_i] :port (9092)
       #
-      def initialize(**options)
+      def initialize(options = {})
         line  = options.fetch(:host) { "localhost" }
         @host = line[HOST]
         @port = (line[PORT] || options.fetch(:port) { 9092 }).to_i

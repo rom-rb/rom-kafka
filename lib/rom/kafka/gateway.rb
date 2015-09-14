@@ -112,7 +112,9 @@ module ROM::Kafka
     #   How long to block until the server sends data.
     #   NOTE: This is only enforced if min_bytes is > 0.
     #
-    def initialize(*addresses, **options)
+    def initialize(*addresses)
+      options = Hash[addresses.pop]
+
       brokers = Brokers.new(addresses, options).to_a
       super options.merge(brokers: brokers) # prepares #attributes
 

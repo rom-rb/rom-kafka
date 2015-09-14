@@ -37,7 +37,7 @@ describe ROM::Kafka::Brokers do
     end
 
     context "with different brokers" do
-      let(:other) { custom_brokers }
+      let(:other) { described_class.new "foo" }
 
       it { is_expected.to eql false }
     end

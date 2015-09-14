@@ -26,6 +26,7 @@ module ROM::Kafka
 
     include Equalizer.new(:to_a)
 
+    # @!method initialize(lines, options)
     # Initializes an immutable collection from address lines and/or options
     #
     # The initializer is options-tolerant: it just ignores unknown options.
@@ -36,7 +37,9 @@ module ROM::Kafka
     # @option options [#to_s, Array<#to_s>] :hosts
     # @option options [#to_i] :port
     #
-    def initialize(*lines, **options)
+    def initialize(*lines)
+      options = lines.last.instance_of?(Hash) ? lines.pop : {}
+
       port  = options[:port]
       hosts = (lines + Array[options[:hosts]]).compact.flatten
 
