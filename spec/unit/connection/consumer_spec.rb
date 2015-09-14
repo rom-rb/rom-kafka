@@ -73,7 +73,7 @@ describe ROM::Kafka::Connection::Consumer do
     context "with a block" do
       subject { consumer.to_a }
 
-      it "fetches messages until received any" do
+      it "fetches messages while received any" do
         expect(connection).to receive(:fetch).exactly(3).times
         expect(subject).to eq [tuple, tuple]
       end
