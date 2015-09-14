@@ -81,7 +81,7 @@ module ROM::Kafka
       #
       # Fetches the next portion of messages until no messages given
       #
-      # @return [Enumerator<Array<Hash{Symbol => String, Integer>>]
+      # @return [Enumerator<Array<Hash{Symbol => String, Integer}>>]
       #
       # @yieldparam [Hash{Symbol => String, Integer}] tuple
       #
