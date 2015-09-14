@@ -3,10 +3,9 @@
 describe ROM::Kafka::Commands::Create do
 
   let(:command)  { described_class.new relation }
-  let(:relation) { double :relation, where: updated, dataset: dataset }
-  let(:updated)  { double :updated }
-  let(:dataset)  { double :dataset, publish: tuples }
-  let(:tuples)   { [double(:first_message), double(:second_message)] }
+  let(:relation) { double :relation, dataset: dataset }
+  let(:dataset)  { double :dataset, producer: producer, topic: "qux" }
+  let(:producer) { double :producer, publish: nil }
 
   describe ".adapter" do
     subject { described_class.adapter }
@@ -20,38 +19,60 @@ describe ROM::Kafka::Commands::Create do
     it { is_expected.to be_kind_of ROM::Commands::Create }
   end # describe .new
 
-  describe "#relation" do
-    subject { command.relation }
+  describe "#key" do
+    subject { command.key }
 
-    it { is_expected.to eql(relation) }
-  end # describe #relation
+    it { is_expected.to be_nil }
+  end # describe #key
 
-  describe "#execute" do
-    subject { command.execute(*tuples) }
+  describe "#with" do
+    subject { command.with(key: "foo") }
 
-    it "publishes tuples to the dataset" do
-      expect(dataset).to receive(:publish).with(*tuples)
-      subject
-    end
-
-    it "returns tuples" do
-      expect(subject).to eql(tuples)
-    end
-  end # describe #execute
-
-  describe "#where" do
-    subject { command.where(options) }
-
-    let(:options) { { foo: :FOO, bar: :BAR } }
-
-    it "returns a relation" do
+    it "returns a command" do
       expect(subject).to be_kind_of described_class
     end
 
-    it "updates the relation" do
-      expect(relation).to receive(:where).with(options)
-      expect(subject.relation).to eql(updated)
+    it "preserves current relation" do
+      expect(subject.relation).to eql relation
+    end
+
+    it "updates the key" do
+      expect(subject.key).to eql("foo")
     end
   end # describe #using
+
+  describe "#call" do
+    subject { command.call(:bar, ["baz"]) }
+
+    context "when key isn't set" do
+      let(:bar) { { value: "bar", topic: "qux" } }
+      let(:baz) { { value: "baz", topic: "qux" } }
+
+      it "publishes tuples to the producer" do
+        expect(producer).to receive(:publish).with(bar, baz)
+        subject
+      end
+
+      it "returns tuples" do
+        expect(subject).to eql [bar, baz]
+      end
+    end
+
+    context "when key is set" do
+      let(:command) { described_class.new(relation).with(key: "foo") }
+
+      let(:bar) { { value: "bar", topic: "qux", key: "foo" } }
+      let(:baz) { { value: "baz", topic: "qux", key: "foo" } }
+
+      it "publishes tuples to the producer" do
+        expect(producer).to receive(:publish).with(bar, baz)
+        subject
+      end
+
+      it "returns tuples" do
+        expect(subject).to eql [bar, baz]
+      end
+    end
+  end # describe #call
 
 end # describe ROM::Kafka::Relation

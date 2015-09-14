@@ -6,7 +6,7 @@ module ROM::Kafka
   #
   # @example
   #   ROM.use(:auto_registration)
-  #   ROM.setup(:kafka, :consumer, "localhost:9092")
+  #   ROM.setup(:kafka, "localhost:9092")
   #
   #   class Users < ROM::Relation[:kafka]
   #     topic "users"
