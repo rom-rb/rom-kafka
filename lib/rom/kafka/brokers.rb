@@ -38,13 +38,8 @@ module ROM::Kafka
     # @option options [#to_i] :port
     #
     def initialize(*lines)
-      options = lines.last.instance_of?(Hash) ? lines.pop : {}
-
-      port  = options[:port]
-      hosts = (lines + Array[options[:hosts]]).compact.flatten
-
-      @brokers = hosts.map { |host| Broker.new(host: host, port: port) }
-      @brokers = [Broker.new] unless @brokers.any?
+      hosts, port = extract_hosts_and_port(lines)
+      @brokers    = extract_brokers(hosts, port)
 
       IceNine.deep_freeze(self)
     end
@@ -55,6 +50,21 @@ module ROM::Kafka
     #
     def to_a
       @brokers.map(&:to_s)
+    end
+
+    private
+
+    def extract_hosts_and_port(lines)
+      options = lines.last.instance_of?(Hash) ? lines.pop : {}
+      port    = options[:port]
+      hosts   = (lines + Array[options[:hosts]]).compact.flatten
+
+      [hosts, port]
+    end
+
+    def extract_brokers(hosts, port)
+      brokers = hosts.map { |host| Broker.new(host: host, port: port) }
+      brokers.any? ? brokers : [Broker.new]
     end
 
   end # class Brokers

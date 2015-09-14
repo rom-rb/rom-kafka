@@ -114,7 +114,6 @@ module ROM::Kafka
     #
     def initialize(*addresses)
       options = Hash[addresses.pop]
-
       brokers = Brokers.new(addresses, options).to_a
       super options.merge(brokers: brokers) # prepares #attributes
 
