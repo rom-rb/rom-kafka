@@ -2,104 +2,113 @@
 
 module ROM::Kafka
 
-  # The dataset describes a specific partition of some Kafka topic
+  # The dataset describes Kafka topic
   #
-  # Dataset connects to Kafka via role-specific driver (depends on whether
-  # the dataset is prepared for producer of consumer of Kafka messages).
-  #
-  # Every driver provides the same API with `#each`, `#send`, and `#close`.
-  # Depending on the type of the driver (access to Kafka), it either
-  # implements the corresponding method, or raises the exception.
-  #
-  # * a producer can only [#send] messages to Kafka;
-  # * a consumer can only fetch messages and iterate (using [#each]) by them.
-  #
-  # The consumer can also change the initial [#offset] for selecting messages.
+  # @api private
   #
   class Dataset
 
+    extend AttributesDSL
     include Enumerable
 
-    # @!attribute [r] role
-    #
-    # @return [String] The role of Kafka client
-    #
-    attr_reader :role
+    # Customizable attributes for a consumer connection
+    attribute :partition, default: 0
+    attribute :offset,    default: 0
+    attribute :min_bytes
+    attribute :max_bytes
+    attribute :max_wait_ms
 
-    # @!attribute [r] client
+    # @!attribute [r] gateway
     #
-    # @return [String] The id of Kafka client
+    # @return [ROM::Kafka::Gateway]
+    #   The back reference to the gateway, that provided the dataset
     #
-    attr_reader :client
+    attr_reader :gateway
 
     # @!attribute [r] topic
     #
-    # @return [String] The name of the current topic
+    # @return [String] The name of the topic, described by the dataset
     #
     attr_reader :topic
 
-    # @!attribute [r] attributes
+    # @!attribute [r] producer
     #
-    # @return [Hash] initialized attributes of the dataset
+    # @return [ROM::Kafka::Connection::Producer]
+    #   The producer connection to Kafka brokers, defined by a gateway.
+    #   It is stored for being used by a `Create` command.
     #
-    attr_reader :attributes
+    attr_reader :producer
 
-    # Initializes a partition with topic and attributes from the gateway.
+    # @!attribute [r] consumer
     #
-    # @param [#to_s] role
-    # @param [#to_s] client
-    # @param [#to_s] topic
-    # @param [Hash] attributes
+    # @return [ROM::Kafka::Connection::Consumer]
+    #   The consumer connection to Kafka brokers, used to fetch messages
+    #   via [#each] method call.
     #
-    # @option (see ROM::Kafka::Gateway)
+    attr_reader :consumer
+
+    # Initializes the dataset with a gateway and topic name
     #
-    # @api private
+    # Attributes are set by default from a gateway. Later you can create
+    # new dataset for the same gateway and topic, but with attributes,
+    # updated via [#using] method.
     #
-    def initialize(role, client, topic, attributes)
-      @role = role
-      @client = client
-      @topic = topic
-      @attributes = attributes
+    # @param [ROM::Kafka::Gateway] gateway
+    # @param [String] topic
+    #
+    # @option options [Integer] :partition (0)
+    #   A partition number to fetch messages from
+    # @option options [Integer] :offset (0)
+    #   An initial offset to start fetching from.
+    # @option options [Integer] :min_bytes (1)
+    #   A smallest amount of data the server should send.
+    #   (By default send us data as soon as it is ready).
+    # @option options [Integer] :max_bytes (1_048_576)
+    #   A maximum number of bytes to fetch by consumer (1MB by default).
+    # @option options [Integer] :max_wait_ms (100)
+    #   How long to block until the server sends data.
+    #   NOTE: This is only enforced if min_bytes is > 0.
+    #
+    def initialize(gateway, topic, **options)
+      super gateway.attributes.merge(options)
+      @topic    = topic
+      @gateway  = gateway
+      @producer = gateway.producer
+      @consumer = prepare_consumer
     end
 
-    # Returns a new dataset with updated attributes and the same session
+    # Returns a new dataset with updated consumer attributes
     #
     # @param [Hash] options The part of attributes to be updated
     #
     # @return [ROM::Kafka::Dataset]
     #
     def using(options)
-      self.class.new(role, client, topic, attributes.merge(options))
+      self.class.new(gateway, topic, attributes.merge(options))
     end
 
-    # Publishes messages to the Kafka brokers
-    #
-    # Used by the producer session only.
-    #
-    # @param [Object, Array] messages The list of messages to be sent to Kafka
-    #
-    # @return [Array<Hash>] the list of tuples sent to Kafka
-    #
-    def publish(*messages)
-      session.publish(*messages)
-    end
-
-    # Returns the enumerator to iterate via fetched tuples
-    #
-    # Used by the consumer session only.
+    # Returns the enumerator to iterate via tuples, fetched from a [#consumer].
     #
     # @yieldparam [Hash] tuple
     #
     # @return [Enumerator<Hash>]
     #
     def each
-      session.each
+      consumer.each
     end
 
     private
 
-    def session
-      Drivers.build(role, attributes.merge(topic: topic, client_id: client))
+    def prepare_consumer
+      Connection::Consumer.new consumer_options
+    end
+
+    def consumer_options
+      attributes.merge(
+        topic: topic,
+        client_id: gateway.client_id,
+        brokers: gateway.brokers
+      )
     end
 
   end # class Dataset
