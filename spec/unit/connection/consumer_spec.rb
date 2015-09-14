@@ -12,14 +12,6 @@ describe ROM::Kafka::Connection::Consumer do
   # ============================================================================
 
   let(:consumer)   { described_class.new options }
-  let(:brokers)    { ["127.0.0.1:9092", "127.0.0.2:9092"] }
-  let(:client)     { "foo" }
-  let(:topic)      { "bar" }
-  let(:partition)  { 1 }
-  let(:offset)     { 100 }
-  let(:attributes) { { min_bytes: 2, max_bytes: 3000, max_wait_ms: 100 } }
-  let(:tuple)      { { value: "Hi!", topic: "foo", partition: 1, offset: 100 } }
-  let(:message)    { double :message, tuple }
   let(:options) do
     attributes.merge(
       client_id: client,
@@ -29,6 +21,15 @@ describe ROM::Kafka::Connection::Consumer do
       offset: offset
     )
   end
+  let(:attributes) { { min_bytes: 2, max_bytes: 3000, max_wait_ms: 100 } }
+  let(:brokers)    { ["127.0.0.1:9092", "127.0.0.2:9092"] }
+  let(:client)     { "foo" }
+  let(:topic)      { "bar" }
+  let(:partition)  { 1 }
+  let(:offset)     { 100 }
+  let(:tuple)      { { value: "Hi!", topic: "foo", partition: 1, offset: 100 } }
+  let(:message)    { double :message, tuple }
+
 
   describe ".new" do
     subject { consumer }
@@ -61,8 +62,15 @@ describe ROM::Kafka::Connection::Consumer do
 
   describe "#each" do
 
-    let(:messages) { [message, message] }
-    before { allow(connection).to receive(:fetch) { [messages.pop].compact } }
+    let(:messages) { [message, message] } # stub messages to extract from broker
+    before do
+      allow(connection)
+        .to receive(:fetch) do
+          data = [messages.pop].compact
+          messages.freeze unless data.any? # the next `pop` should fail
+          data
+        end
+    end
 
     context "without a block" do
       subject { consumer.each }

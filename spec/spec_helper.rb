@@ -10,9 +10,3 @@ end
 
 # Loads the code under test
 require "rom-kafka"
-
-if (timeout = ENV["USE_TIMEOUT"].to_f)
-  RSpec.configure do |config|
-    config.around(:each) { |example| Timeout.timeout(timeout, &example) }
-  end
-end

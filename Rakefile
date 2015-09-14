@@ -22,12 +22,12 @@ end
 
 desc "Runs mutation metric for testing"
 task :mutant do
-  system "USE_TIMEOUT=0.5 mutant -r rom-kafka --use rspec ROM::Kafka* --fail-fast"
+  system "mutant -r rom-kafka --use rspec ROM::Kafka* --fail-fast"
 end
 
 desc "Exhort all evils"
 task :exhort do
-  system "USE_TIMEOUT=0.5 mutant -r rom-kafka --use rspec ROM::Kafka*"
+  system "mutant -r rom-kafka --use rspec ROM::Kafka*"
 end
 
 desc "Runs all the necessary metrics before making a commit"

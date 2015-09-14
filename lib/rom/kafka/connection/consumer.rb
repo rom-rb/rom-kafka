@@ -87,10 +87,10 @@ module ROM::Kafka
       #
       def each
         return to_enum unless block_given?
-        loop do
+        begin
           tuples = fetch
-          tuples.any? ? tuples.each { |tuple| yield(tuple) } : break
-        end
+          tuples.each { |tuple| yield(tuple) }
+        end while tuples.any?
       end
 
       private
