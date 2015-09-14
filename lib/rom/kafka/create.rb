@@ -13,7 +13,7 @@ module ROM::Kafka
     #   ROM.setup(:kafka, "localhost:9092")
     #
     #   class Users < ROM::Relation[:kafka]
-    #     dataset "users"
+    #     dataset :users
     #   end
     #
     #   class GreetUsers < ROM::Commands::Create[:kafka]
@@ -23,8 +23,8 @@ module ROM::Kafka
     #
     #   rom = ROM.finalize.env
     #   greet = rom.commands(:users).greet
-    #   greet.where(partition: 1).call "Hi!"
-    #   # => [{ value: "Hi!", topic: "users", key: "users", offset: 10 }]
+    #   greet.with(key: "greetings").call "Hi!"
+    #   # => [{ value: "Hi!", topic: "users", key: "greetings" }]
     #
     class Create < ROM::Commands::Create
 
