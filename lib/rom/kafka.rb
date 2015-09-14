@@ -24,4 +24,6 @@ module ROM
 
   end # module Kafka
 
+  register_adapter(:kafka, Kafka)
+
 end # module ROM
