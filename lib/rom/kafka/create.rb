@@ -67,8 +67,7 @@ module ROM::Kafka
       end
 
       def tuple(text)
-        output = { value: text.to_s, topic: dataset.topic }
-        key ? output.merge(key: key) : output
+        { value: text.to_s, topic: dataset.topic, key: key }
       end
 
     end # class Create

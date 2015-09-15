@@ -45,8 +45,8 @@ describe ROM::Kafka::Commands::Create do
     subject { command.call(:bar, ["baz"]) }
 
     context "when key isn't set" do
-      let(:bar) { { value: "bar", topic: "qux" } }
-      let(:baz) { { value: "baz", topic: "qux" } }
+      let(:bar) { { value: "bar", topic: "qux", key: nil } }
+      let(:baz) { { value: "baz", topic: "qux", key: nil } }
 
       it "publishes tuples to the producer" do
         expect(producer).to receive(:publish).with(bar, baz)
