@@ -7,7 +7,7 @@ describe ROM::Kafka::Dataset do
   let(:consumer)       { double :consumer }
   before { allow(consumer_class).to receive(:new) { consumer } }
 
-  let(:dataset) { described_class.new(gateway, topic) }
+  let(:dataset) { described_class.new(gateway, topic.to_sym) }
   let(:gateway) { gateway_class.new client_id: "foo" }
   let(:topic)   { "bar" }
 

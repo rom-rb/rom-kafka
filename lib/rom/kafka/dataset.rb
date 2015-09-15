@@ -72,7 +72,7 @@ module ROM::Kafka
     #
     def initialize(gateway, topic, options = {})
       super gateway.attributes.merge(options)
-      @topic    = topic
+      @topic    = topic.to_s
       @gateway  = gateway
       @producer = gateway.producer
       @consumer = prepare_consumer
