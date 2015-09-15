@@ -14,6 +14,7 @@ module ROM::Kafka
     # Customizable attributes for a consumer connection
     attribute :partition, default: 0
     attribute :offset,    default: 0
+    attribute :limit,     default: 0
     attribute :min_bytes
     attribute :max_bytes
     attribute :max_wait_ms
@@ -89,12 +90,20 @@ module ROM::Kafka
 
     # Returns the enumerator to iterate via tuples, fetched from a [#consumer].
     #
+    # If a `limit` of messages is set, iterator stops after achieving it.
+    #
     # @yieldparam [Hash] tuple
     #
-    # @return [Enumerator<Hash>]
+    # @return [Enumerator<Hash{Symbol => String, Integer}>]
     #
     def each
-      consumer.each
+      return to_enum unless block_given?
+      enum = consumer.each
+      if limit.equal?(0)
+        loop { yield(enum.next) }
+      else
+        limit.times { yield(enum.next) }
+      end
     end
 
     private

@@ -35,6 +35,7 @@ describe ROM::Kafka::Dataset do
         {
           partition: 0,
           offset: 0,
+          limit: 0,
           min_bytes: gateway.min_bytes,
           max_bytes: gateway.max_bytes,
           max_wait_ms: gateway.max_wait_ms
@@ -52,6 +53,7 @@ describe ROM::Kafka::Dataset do
         {
           partition: 1,
           offset: 2,
+          limit: 10,
           min_bytes: 1_024,
           max_bytes: 10_240,
           max_wait_ms: 100
@@ -81,6 +83,7 @@ describe ROM::Kafka::Dataset do
       {
         partition: 1,
         offset: 2,
+        limit: 0,
         min_bytes: 1_024,
         max_bytes: 10_240,
         max_wait_ms: 100
@@ -125,13 +128,37 @@ describe ROM::Kafka::Dataset do
   end # describe #using
 
   describe "#each" do
-    subject { dataset.each }
+    subject { dataset.to_a }
 
-    it "is delegated to consumer" do
-      iterator = double :iterator
-      allow(consumer).to receive(:each) { iterator }
+    let(:consumer) { double :consumer, each: data.each }
+    let(:data)     { %w(foo bar baz qux) }
 
-      expect(subject).to eql iterator
+    context "when limit isn't set" do
+      it "is delegated to the consumer" do
+        expect(subject).to eql data
+      end
+
+      it "yields limited number of times" do
+        expect { |b| dataset.each(&b) }.to yield_control.exactly(4).times
+      end
+    end
+
+    context "when limit is set" do
+      let(:dataset) { described_class.new(gateway, topic, limit: 2) }
+
+      it "is delegated to the consumer" do
+        expect(subject).to eql data[0..1]
+      end
+
+      it "yields limited number of times" do
+        expect { |b| dataset.each(&b) }.to yield_control.twice
+      end
+    end
+
+    context "without a block" do
+      subject { dataset.each }
+
+      it { is_expected.to be_kind_of Enumerator }
     end
   end # describe #each
 
