@@ -96,14 +96,9 @@ module ROM::Kafka
     #
     # @return [Enumerator<Hash{Symbol => String, Integer}>]
     #
-    def each
+    def each(&block)
       return to_enum unless block_given?
-      enum = consumer.each
-      if limit.equal?(0)
-        loop { yield(enum.next) }
-      else
-        limit.times { yield(enum.next) }
-      end
+      limit.equal?(0) ? unlimited_each(&block) : limited_each(&block)
     end
 
     private
@@ -118,6 +113,16 @@ module ROM::Kafka
         client_id: gateway.client_id,
         brokers: gateway.brokers
       )
+    end
+
+    def unlimited_each
+      enum = consumer.each
+      loop { yield(enum.next) }
+    end
+
+    def limited_each
+      enum = consumer.each
+      limit.times { yield(enum.next) }
     end
 
   end # class Dataset
