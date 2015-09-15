@@ -146,8 +146,8 @@ describe ROM::Kafka::Gateway do
       expect { subject }.to change { gateway["foobar"] }.from(nil).to(dataset)
     end
 
-    it "returns itself" do
-      expect(subject).to eql(gateway)
+    it "returns a dataset" do
+      expect(subject).to eql(dataset)
     end
   end # describe #dataset
 

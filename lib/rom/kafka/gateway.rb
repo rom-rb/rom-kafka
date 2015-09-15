@@ -147,9 +147,7 @@ module ROM::Kafka
     # @return [self] itself
     #
     def dataset(topic)
-      @datasets[topic.to_sym] = Dataset.new(self, topic)
-
-      self
+      @datasets[topic.to_sym] ||= Dataset.new(self, topic)
     end
 
     # Checks whether a dataset is registered by topic
