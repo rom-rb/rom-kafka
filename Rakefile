@@ -22,12 +22,12 @@ end
 
 desc "Runs mutation metric for testing"
 task :mutant do
-  system "mutant -r rom-kafka --use rspec ROM::Kafka* --fail-fast"
+  system "MUTANT=true mutant -r rom-kafka --use rspec ROM::Kafka* --fail-fast"
 end
 
 desc "Exhort all evils"
 task :exhort do
-  system "mutant -r rom-kafka --use rspec ROM::Kafka*"
+  system "MUTANT=true mutant -r rom-kafka --use rspec ROM::Kafka*"
 end
 
 desc "Runs all the necessary metrics before making a commit"

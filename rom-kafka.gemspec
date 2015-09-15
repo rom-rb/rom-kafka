@@ -22,9 +22,9 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = "~> 1.9", ">= 1.9.3"
 
-  gem.add_runtime_dependency "rom", "~> 0.9.1"
-  gem.add_runtime_dependency "poseidon", "~> 0.0.3"
-  gem.add_runtime_dependency "attributes_dsl", "~> 0.0"
+  gem.add_runtime_dependency "rom", "~> 0.9", ">= 0.9.1"
+  gem.add_runtime_dependency "poseidon", "~> 0.0", ">= 0.0.5"
+  gem.add_runtime_dependency "attributes_dsl", "~> 0.0", ">= 0.0.2"
 
   gem.add_development_dependency "hexx-rspec", "~> 0.5"
   gem.add_development_dependency "timecop", "~> 0.8"
