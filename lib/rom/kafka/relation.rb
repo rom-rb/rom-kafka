@@ -33,6 +33,16 @@ module ROM::Kafka
       dataset(name)
     end
 
+    # Returns new relation with updated `:partition` attribute
+    #
+    # @param [Integer] value
+    #
+    # @return [ROM::Kafka::Relation]
+    #
+    def from(value)
+      using(partition: value)
+    end
+
     # Returns new relation with updated `:offset` attribute
     #
     # @param [Integer] value
@@ -51,17 +61,6 @@ module ROM::Kafka
     #
     def limit(value)
       using(limit: value)
-    end
-
-    # Returns new relation with updated partition or key to fetch messages from
-    #
-    # @option attributes [Integer] :partition
-    # @option attributes [#to_s] :key
-    #
-    # @return [ROM::Kafka::Relation]
-    #
-    def where(attributes)
-      using attributes.select { |key| [:key, :partition].include? key }
     end
 
     # Returns new relation where dataset is updated with given attributes

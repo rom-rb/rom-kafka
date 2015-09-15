@@ -80,15 +80,15 @@ describe ROM::Kafka::Relation do
     end
   end # describe #limit
 
-  describe "#where" do
-    subject { relation.where(key: :foo, partition: 3, foo: :bar) }
+  describe "#from" do
+    subject { relation.from(3) }
 
     it "returns a relation" do
       expect(subject).to be_kind_of described_class
     end
 
     it "updates the dataset with key and partition" do
-      expect(dataset).to receive(:using).with(key: :foo, partition: 3)
+      expect(dataset).to receive(:using).with(partition: 3)
       expect(subject.dataset).to eql(updated)
     end
   end # describe #where
