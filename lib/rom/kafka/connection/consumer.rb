@@ -41,30 +41,28 @@ module ROM::Kafka
       # The initializer is attributes-agnostic. This means it doesn't validate
       # attributes, but skips unused.
       #
-      # @option options [#to_s] :client_id
+      # @option opts [#to_s] :client_id
       #   A required unique id used to indentify the Kafka client.
-      # @option options [Array<String>] :brokers
+      # @option opts [Array<String>] :brokers
       #   A list of seed brokers to find a lead broker to fetch messages from.
-      # @option options [String] :topic
+      # @option opts [String] :topic
       #   A name of the topic to fetch messages from.
-      # @option options [Integer] :partition
+      # @option opts [Integer] :partition
       #   A number of partition to fetch messages from.
-      # @option options [Integer] :offset
+      # @option opts [Integer] :offset
       #   An initial offset to start fetching from.
-      # @option options [Integer] :min_bytes (1)
+      # @option opts [Integer] :min_bytes (1)
       #   A smallest amount of data the server should send.
       #   (By default send us data as soon as it is ready).
-      # @option options [Integer] :max_bytes (1_048_576)
+      # @option opts [Integer] :max_bytes (1_048_576)
       #   A maximum number of bytes to fetch by consumer (1MB by default).
-      # @option options [Integer] :max_wait_ms (100)
+      # @option opts [Integer] :max_wait_ms (100)
       #   How long to block until the server sends data.
       #   NOTE: This is only enforced if min_bytes is > 0.
       #
-      def initialize(options)
+      def initialize(opts)
         super # takes declared attributes from options
-        args =
-          options
-          .values_at(:client_id, :brokers, :topic, :partition, :offset)
+        args = opts.values_at(:client_id, :brokers, :topic, :partition, :offset)
         @connection = DRIVER.consumer_for_partition(*args, attributes)
       end
 
@@ -96,13 +94,8 @@ module ROM::Kafka
 
       private
 
-      def tuple(message)
-        {
-          value: message.value,
-          topic: message.topic,
-          partition: message.partition,
-          offset: message.offset
-        }
+      def tuple(msg)
+        { value: msg.value, topic: msg.topic, key: msg.key, offset: msg.offset }
       end
 
     end # class Consumer

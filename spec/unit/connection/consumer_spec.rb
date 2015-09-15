@@ -11,7 +11,7 @@ describe ROM::Kafka::Connection::Consumer do
   before { allow(driver).to receive(:consumer_for_partition) { connection } }
   # ============================================================================
 
-  let(:consumer)   { described_class.new options }
+  let(:consumer) { described_class.new options }
   let(:options) do
     attributes.merge(
       client_id: client,
@@ -27,9 +27,8 @@ describe ROM::Kafka::Connection::Consumer do
   let(:topic)      { "bar" }
   let(:partition)  { 1 }
   let(:offset)     { 100 }
-  let(:tuple)      { { value: "Hi!", topic: "foo", partition: 1, offset: 100 } }
+  let(:tuple)      { { value: "Hi!", topic: "foo", key: nil, offset: 100 } }
   let(:message)    { double :message, tuple }
-
 
   describe ".new" do
     subject { consumer }
