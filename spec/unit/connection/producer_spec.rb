@@ -49,9 +49,9 @@ describe ROM::Kafka::Connection::Producer do
   describe "#publish" do
     subject { producer.publish(*data) }
 
-    let(:data) { [foo, [bar]] }
+    let(:data) { [foo, [value: "bar", topic: "bars"]] }
     let(:foo)  { { value: "foo", topic: "foos", key: :foo } }
-    let(:bar)  { { value: "bar", topic: "bars", key: :bar } }
+    let(:bar)  { { value: "bar", topic: "bars", key: nil } }
 
     it "builds messages and sends it to the #connection" do
       expect(connection).to receive(:send_messages) do |args|

@@ -87,7 +87,7 @@ module ROM::Kafka
       # @return [Array<Hash>] the list of published tuples
       #
       def publish(*data)
-        tuples = data.flatten
+        tuples = data.flatten.map { |tuple| { key: nil }.merge(tuple) }
         @connection.send_messages tuples.map(&method(:message))
 
         tuples
