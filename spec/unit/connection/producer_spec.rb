@@ -47,22 +47,32 @@ describe ROM::Kafka::Connection::Producer do
   end # describe #connection
 
   describe "#publish" do
-    subject { producer.publish(*data) }
+    subject { producer.publish(*input) }
 
-    let(:data) { [foo, [value: "bar", topic: "bars"]] }
-    let(:foo)  { { value: "foo", topic: "foos", key: :foo } }
-    let(:bar)  { { value: "bar", topic: "bars", key: nil } }
+    let(:input) do
+      [
+        { value: "foo", topic: "foos", key: 1 },
+        [{ value: "bar", topic: "bars" }]
+      ]
+    end
+
+    let(:output) do
+      [
+        { value: "foo", topic: "foos", key: "1" },
+        { value: "bar", topic: "bars", key: nil }
+      ]
+    end
 
     it "builds messages and sends it to the #connection" do
       expect(connection).to receive(:send_messages) do |args|
-        expect(args.map(&:to_tuple)).to eql [foo, bar]
+        expect(args.map(&:to_tuple)).to eql output
       end
 
       subject
     end
 
     it "returns the plain array of tuples" do
-      expect(subject).to eql [foo, bar]
+      expect(subject).to eql output
     end
   end # describe #publish
 

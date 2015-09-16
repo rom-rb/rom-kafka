@@ -82,18 +82,26 @@ module ROM::Kafka
 
       # Sends tuples to the underlying connection
       #
+      # Stringifies non-empty hash values to conform to 'poseidon' API.
+      #
       # @param [Array<Hash>] data
       #
-      # @return [Array<Hash>] the list of published tuples
+      # @return [Array<Hash{Symbol => String, nil}>]
+      #   The list of published tuples
       #
       def publish(*data)
-        tuples = data.flatten.map { |tuple| { key: nil }.merge(tuple) }
+        tuples = data.flatten.map(&method(:stringify_keys))
         @connection.send_messages tuples.map(&method(:message))
 
         tuples
       end
 
       private
+
+      def stringify_keys(tuple)
+        keys = [:value, :topic, :key]
+        Hash[keys.zip(tuple.values_at(*keys).map { |v| v.to_s if v })]
+      end
 
       def message(tuple)
         MESSAGE.new(*tuple.values_at(:topic, :value, :key))

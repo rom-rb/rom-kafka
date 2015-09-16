@@ -27,7 +27,7 @@ describe ROM::Kafka::Connection::Consumer do
   let(:topic)      { "bar" }
   let(:partition)  { 1 }
   let(:offset)     { 100 }
-  let(:tuple)      { { value: "Hi!", topic: "foo", key: nil, offset: 100 } }
+  let(:tuple)      { { value: "Hi!", topic: "foo", key: "foo", offset: 100 } }
   let(:message)    { double :message, tuple }
 
   describe ".new" do

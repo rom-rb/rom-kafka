@@ -40,8 +40,6 @@ module ROM::Kafka
       def execute(*messages)
         tuples = messages.flatten.map(&method(:tuple))
         producer.publish(*tuples)
-
-        tuples
       end
 
       # Returns a new command where `:key` option is updated

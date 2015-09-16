@@ -5,7 +5,8 @@ describe ROM::Kafka::Commands::Create do
   let(:command)  { described_class.new relation }
   let(:relation) { double :relation, dataset: dataset }
   let(:dataset)  { double :dataset, producer: producer, topic: "qux" }
-  let(:producer) { double :producer, publish: nil }
+  let(:producer) { double :producer, publish: output }
+  let(:output)   { double :output }
 
   describe ".adapter" do
     subject { described_class.adapter }
@@ -54,7 +55,7 @@ describe ROM::Kafka::Commands::Create do
       end
 
       it "returns tuples" do
-        expect(subject).to eql [bar, baz]
+        expect(subject).to eql output
       end
     end
 
@@ -70,7 +71,7 @@ describe ROM::Kafka::Commands::Create do
       end
 
       it "returns tuples" do
-        expect(subject).to eql [bar, baz]
+        expect(subject).to eql output
       end
     end
   end # describe #call
