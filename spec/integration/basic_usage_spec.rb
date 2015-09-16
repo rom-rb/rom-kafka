@@ -5,8 +5,7 @@ describe "Basic Usage" do
 
   include_context :scholars_topic
 
-  let(:scholars)     { rom.relation(:scholars) }
-  let(:add_scholars) { rom.command(:scholars).insert.with(key: 0) }
+  let(:add_scholars) { insert.with(key: 0) }
 
   it "works" do
     # Add messages into the 0 partition (see :add_scholars above)

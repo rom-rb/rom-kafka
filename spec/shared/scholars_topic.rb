@@ -1,36 +1,28 @@
 # encoding: utf-8
 
-module Test # namespace for classes
+shared_examples :scholars_topic do
 
-  shared_examples :scholars_topic do
-    before do
-      ROM.use :auto_registration
-      ROM.setup(
-        :kafka,
-        "localhost:9092",
-        client_id: "admin",
-        # use the number of partition as a key
-        partitioner: -> key, total { key.to_i % total }
-      )
+  let!(:rom) do
+    env = ROM::Environment.new
+    env.use :auto_registration
 
-      class Scholars < ROM::Relation[:kafka]
-        topic :scholars # the same as `dataset`
-        register_as :scholars
-      end
+    setup = env.setup(
+      :kafka, "localhost:9092",
+      client_id: "admin",
+      # use the number of partition as a key
+      partitioner: -> key, total { key.to_i % total }
+    )
 
-      class AddScholars < ROM::Commands::Create[:kafka]
-        relation :scholars
-        register_as :insert
-      end
-
-      ROM.finalize
+    setup.relation(:scholars)
+    setup.commands(:scholars) do
+      define(:create)
     end
 
-    after do
-      %w(AddScholars Scholars).each { |const| Test.send :remove_const, const }
-    end
+    setup.finalize
+    setup.env
+  end
 
-    let(:rom) { ROM.env }
-  end # shared_examples
+  let(:scholars) { rom.relation(:scholars) }
+  let(:insert)   { rom.command(:scholars).create }
 
-end # module Test
+end # shared_examples
