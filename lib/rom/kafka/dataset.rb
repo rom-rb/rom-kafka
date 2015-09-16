@@ -92,6 +92,8 @@ module ROM::Kafka
     #
     # If a `limit` of messages is set, iterator stops after achieving it.
     #
+    # @param [Proc] block
+    #
     # @yieldparam [Hash] tuple
     #
     # @return [Enumerator<Hash{Symbol => String, Integer}>]
