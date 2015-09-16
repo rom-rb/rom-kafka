@@ -27,6 +27,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "attributes_dsl", "~> 0.0", ">= 0.0.2"
 
   gem.add_development_dependency "hexx-rspec", "~> 0.5"
+  gem.add_development_dependency "inflecto", "~> 0.0", ">= 0.0.2"
   gem.add_development_dependency "timecop", "~> 0.8"
 
 end # Gem::Specification

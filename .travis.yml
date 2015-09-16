@@ -3,19 +3,32 @@ language:     ruby
 bundler_args: --without metrics
 cache:        bundler
 script:       bundle exec rake test:coverage:run
+before_install:
+  # Install Kafka
+  - wget http://www.us.apache.org/dist/kafka/0.8.2.1/kafka_2.10-0.8.2.1.tgz -O kafka.tgz
+  - mkdir -p kafka && tar xzf kafka.tgz -C kafka --strip-components 1
+  - cd kafka
+  # Run Zookeeper/Kafka on localhost (default ports for ZK, Kafka: 2181, 9092)
+  - ./bin/zookeeper-server-start.sh config/zookeeper.properties &
+  - sleep 3
+  - ./bin/kafka-server-start.sh config/server.properties &
+  - sleep 5
+  # Create 'scholars' topic with 3 partitions
+  - ./bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic scholars --partitions 3 --replication-factor 1
+  - cd ../
 rvm:
-  - '1.9.3'
-  - '2.0'
+  # - '1.9.3'
+  # - '2.0'
   - '2.1'
-  - '2.2'
-  - ruby-head
-  - rbx-2 --1.9
-  - rbx-2 --2.1
-  - jruby-1.7-19mode
-  - jruby-1.7-21mode
-  - jruby-9.0.0.0
-  - jruby-head
-matrix:
-  allow_failures:
-    - rvm: ruby-head
-    - rvm: jruby-head
+#   - '2.2'
+#   - ruby-head
+#   - rbx-2 --1.9
+#   - rbx-2 --2.1
+#   - jruby-1.7-19mode
+#   - jruby-1.7-21mode
+#   - jruby-9.0.0.0
+#   - jruby-head
+# matrix:
+#   allow_failures:
+#     - rvm: ruby-head
+#     - rvm: jruby-head
