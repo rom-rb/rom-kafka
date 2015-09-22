@@ -22,6 +22,7 @@ module ROM::Kafka
   class Relation < ROM::Relation
 
     adapter :kafka
+    forward :using
 
     # Kafka-specific alias for the ROM `.dataset` helper method.
     #
@@ -61,16 +62,6 @@ module ROM::Kafka
     #
     def limit(value)
       using(limit: value)
-    end
-
-    # Returns new relation where dataset is updated with given attributes
-    #
-    # @param [Hash] attributes
-    #
-    # @return [ROM::Kafka::Relation]
-    #
-    def using(attributes)
-      self.class.new dataset.using(attributes)
     end
 
   end # class Relation
