@@ -1,5 +1,6 @@
 # encoding: utf-8
 require "attributes_dsl"
+require "immutability" # @todo: remove after attributes_dsl v0.0.3
 require "poseidon"
 require "rom"
 

@@ -10,7 +10,7 @@ describe ROM::Kafka::Brokers do
   describe ".new" do
     subject { default_brokers }
 
-    it { is_expected.to be_frozen }
+    it { is_expected.to be_immutable }
   end # describe .new
 
   describe "#to_a" do

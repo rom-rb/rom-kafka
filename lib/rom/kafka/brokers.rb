@@ -25,6 +25,7 @@ module ROM::Kafka
   class Brokers
 
     include Equalizer.new(:to_a)
+    include Immutability
 
     # @!method initialize(lines, options)
     # Initializes an immutable collection from address lines and/or options
@@ -40,8 +41,6 @@ module ROM::Kafka
     def initialize(*lines)
       hosts, port = extract_hosts_and_port(lines)
       @brokers    = extract_brokers(hosts, port)
-
-      IceNine.deep_freeze(self)
     end
 
     # Returns array of string representations of brokers

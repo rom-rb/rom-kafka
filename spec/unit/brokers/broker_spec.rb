@@ -7,7 +7,7 @@ describe ROM::Kafka::Brokers::Broker do
   describe ".new" do
     subject { broker }
 
-    it { is_expected.to be_frozen }
+    it { is_expected.to be_immutable }
   end # describe .new
 
   describe "#host" do

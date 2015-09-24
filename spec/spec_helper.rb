@@ -18,3 +18,6 @@ if ENV["MUTANT"]
     config.around { |example| Timeout.timeout(0.5, &example) }
   end
 end
+
+# Loads specific matchers
+require "immutability/rspec"

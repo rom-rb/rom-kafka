@@ -25,6 +25,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "rom", "~> 0.9", ">= 0.9.1"
   gem.add_runtime_dependency "poseidon", "~> 0.0", ">= 0.0.5"
   gem.add_runtime_dependency "attributes_dsl", "~> 0.0", ">= 0.0.2"
+  gem.add_runtime_dependency "immutability", "~> 0.0.2" # @todo: remove after attributes_dsl v0.0.3
 
   gem.add_development_dependency "hexx-rspec", "~> 0.5"
   gem.add_development_dependency "inflecto", "~> 0.0", ">= 0.0.2"
