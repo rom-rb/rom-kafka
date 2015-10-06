@@ -64,6 +64,7 @@ module ROM::Kafka
         super # takes declared attributes from options
         args = opts.values_at(:client_id, :brokers, :topic, :partition, :offset)
         @connection = DRIVER.consumer_for_partition(*args, attributes)
+        @mutex = Mutex.new
       end
 
       # Fetches a single portion of messages and converts them to tuple
@@ -71,8 +72,7 @@ module ROM::Kafka
       # @return [Array<Hash{Symbol => String, Integer}>]
       #
       def fetch
-        result = @connection.fetch
-        result.map(&method(:tuple))
+        @mutex.synchronize { @connection.fetch }.map(&method(:tuple))
       end
 
       # Iterates through Kafka messages

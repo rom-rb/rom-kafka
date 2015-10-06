@@ -75,9 +75,10 @@ module ROM::Kafka
       #
       def initialize(options)
         super # takes declared attributes only, skipping brokers and client_id
-        brokers    = options.fetch(:brokers)
-        client     = options.fetch(:client_id)
+        brokers     = options.fetch(:brokers)
+        client      = options.fetch(:client_id)
         @connection = DRIVER.new(brokers, client, attributes)
+        @mutex      = Mutex.new
       end
 
       # Sends tuples to the underlying connection
@@ -90,9 +91,9 @@ module ROM::Kafka
       #   The list of published tuples
       #
       def publish(*data)
-        tuples = data.flatten.map(&method(:stringify_keys))
-        @connection.send_messages tuples.map(&method(:message))
-
+        tuples   = data.flatten.map(&method(:stringify_keys))
+        messages = tuples.map(&method(:message))
+        @mutex.synchronize { @connection.send_messages messages }
         tuples
       end
 
