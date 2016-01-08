@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 describe ROM::Kafka::Connection::Consumer do
 
   # ============================================================================
@@ -34,7 +32,7 @@ describe ROM::Kafka::Connection::Consumer do
     subject { consumer }
 
     it { is_expected.to be_kind_of Enumerable }
-  end # describe .new
+  end
 
   describe "#connection" do
     subject { consumer.connection }
@@ -46,7 +44,7 @@ describe ROM::Kafka::Connection::Consumer do
 
       expect(subject).to eql(connection)
     end
-  end # describe #connection
+  end
 
   describe "#fetch" do
     subject { consumer.fetch }
@@ -57,7 +55,7 @@ describe ROM::Kafka::Connection::Consumer do
       expect(connection).to receive(:fetch)
       expect(subject).to eql [tuple]
     end
-  end # describe #fetch
+  end
 
   describe "#each" do
 
@@ -85,6 +83,5 @@ describe ROM::Kafka::Connection::Consumer do
         expect(subject).to eq [tuple, tuple]
       end
     end
-  end # describe #each
-
-end # describe ROM::Kafka::Connection::Consumer
+  end
+end

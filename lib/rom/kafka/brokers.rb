@@ -1,9 +1,6 @@
-# encoding: utf-8
-
 require_relative "brokers/broker"
 
 module ROM::Kafka
-
   # Value object describing a collection of brokers (host:port)
   #
   # Knows how to extract brokers from address lines and options
@@ -38,7 +35,7 @@ module ROM::Kafka
     # @option options [#to_s, Array<#to_s>] :hosts
     # @option options [#to_i] :port
     #
-    def initialize(*lines)
+    def initialize(*lines) # @todo: refactor using factories
       hosts, port = extract_hosts_and_port(lines)
       @brokers    = extract_brokers(hosts, port)
     end
@@ -65,7 +62,5 @@ module ROM::Kafka
       brokers = hosts.map { |host| Broker.new(host: host, port: port) }
       brokers.any? ? brokers : [Broker.new]
     end
-
-  end # class Brokers
-
-end # module ROM::Kafka
+  end
+end

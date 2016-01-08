@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 describe ROM::Kafka::Commands::Create do
 
   let(:command)  { described_class.new relation }
@@ -12,19 +10,19 @@ describe ROM::Kafka::Commands::Create do
     subject { described_class.adapter }
 
     it { is_expected.to eql(:kafka) }
-  end # describe .adapter
+  end
 
   describe ".new" do
     subject { command }
 
     it { is_expected.to be_kind_of ROM::Commands::Create }
-  end # describe .new
+  end
 
   describe "#key" do
     subject { command.key }
 
     it { is_expected.to be_nil }
-  end # describe #key
+  end
 
   describe "#with" do
     subject { command.with(key: "foo") }
@@ -40,7 +38,7 @@ describe ROM::Kafka::Commands::Create do
     it "updates the key" do
       expect(subject.key).to eql("foo")
     end
-  end # describe #using
+  end
 
   describe "#call" do
     subject { command.call(:bar, ["baz"]) }
@@ -74,6 +72,5 @@ describe ROM::Kafka::Commands::Create do
         expect(subject).to eql output
       end
     end
-  end # describe #call
-
-end # describe ROM::Kafka::Relation
+  end
+end

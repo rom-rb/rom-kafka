@@ -1,7 +1,4 @@
-# encoding: utf-8
-
 shared_examples :scholars_topic do
-
   let!(:rom) do
     env = ROM::Environment.new
     env.use :auto_registration
@@ -24,5 +21,4 @@ shared_examples :scholars_topic do
 
   let(:scholars) { rom.relation(:scholars) }
   let(:insert)   { rom.command(:scholars).create }
-
-end # shared_examples
+end

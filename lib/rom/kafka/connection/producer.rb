@@ -1,9 +1,5 @@
-# encoding: utf-8
-
 module ROM::Kafka
-
   class Connection
-
     # The producer-specific connection to Kafka cluster
     #
     # It is wrapped around `Poseidon::Producer` driver, and responsible for
@@ -73,7 +69,7 @@ module ROM::Kafka
       # @option options [Integer] :socket_timeout_ms (10_000)
       #   How long the producer/consumer socket waits for any reply from server.
       #
-      def initialize(options)
+      def initialize(options) # @todo: Refactor using factory method Connection.build_producer
         super # takes declared attributes only, skipping brokers and client_id
         brokers     = options.fetch(:brokers)
         client      = options.fetch(:client_id)
@@ -107,9 +103,6 @@ module ROM::Kafka
       def message(tuple)
         MESSAGE.new(*tuple.values_at(:topic, :value, :key))
       end
-
-    end # class Producer
-
-  end # class Connection
-
-end # module ROM::Kafka
+    end
+  end
+end

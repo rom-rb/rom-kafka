@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 describe ROM::Kafka::Gateway do
 
   let(:gateway) { described_class.new(client_id: :foo) }
@@ -18,7 +16,7 @@ describe ROM::Kafka::Gateway do
         expect { subject }.to raise_error ArgumentError
       end
     end
-  end # describe .new
+  end
 
   describe "#brokers" do
     subject { gateway.brokers }
@@ -48,7 +46,7 @@ describe ROM::Kafka::Gateway do
 
       it { is_expected.to eql brokers }
     end
-  end # describe #hosts
+  end
 
   describe "#attributes" do
     subject { gateway.attributes }
@@ -98,13 +96,13 @@ describe ROM::Kafka::Gateway do
 
       it { is_expected.to eql attributes }
     end
-  end # describe #attributes
+  end
 
   describe "#[]" do
     subject { gateway[:foo] }
 
     it { is_expected.to eql(nil) }
-  end # describe #[]
+  end
 
   describe "#dataset?" do
     before do
@@ -122,7 +120,7 @@ describe ROM::Kafka::Gateway do
 
       it { is_expected.to eql false }
     end
-  end # describe #dataset
+  end
 
   describe "#dataset" do
     subject { gateway.dataset topic }
@@ -149,7 +147,7 @@ describe ROM::Kafka::Gateway do
     it "returns a dataset" do
       expect(subject).to eql(dataset)
     end
-  end # describe #dataset
+  end
 
   describe "#producer" do
     subject { gateway.producer }
@@ -166,6 +164,5 @@ describe ROM::Kafka::Gateway do
       expect(subject).to eql producer
       expect(attributes).to eql gateway.attributes
     end
-  end # describe #producer
-
-end # describe ROM::Kafka::Gateway
+  end
+end

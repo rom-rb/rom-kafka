@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 begin
   require "hexx-suit"
   Hexx::Suit.load_metrics_for(self)

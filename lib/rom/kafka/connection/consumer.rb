@@ -1,9 +1,5 @@
-# encoding: utf-8
-
 module ROM::Kafka
-
   class Connection
-
     # The consumer-specific connection to Kafka cluster
     #
     # It is wrapped around `Poseidon::Consumer` driver, and responsible for
@@ -16,7 +12,6 @@ module ROM::Kafka
     # @api private
     #
     class Consumer < Connection
-
       include Enumerable
 
       # The 'poseidon'-specific class describing consumers
@@ -60,7 +55,7 @@ module ROM::Kafka
       #   How long to block until the server sends data.
       #   NOTE: This is only enforced if min_bytes is > 0.
       #
-      def initialize(opts)
+      def initialize(opts) # @todo: refactor usinng factory method Connection.build_consumer
         super # takes declared attributes from options
         args = opts.values_at(:client_id, :brokers, :topic, :partition, :offset)
         @connection = DRIVER.consumer_for_partition(*args, attributes)
@@ -97,9 +92,6 @@ module ROM::Kafka
       def tuple(msg)
         { value: msg.value, topic: msg.topic, key: msg.key, offset: msg.offset }
       end
-
-    end # class Consumer
-
-  end # class Connection
-
-end # module ROM::Kafka
+    end
+  end
+end

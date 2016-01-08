@@ -1,7 +1,4 @@
-# encoding: utf-8
-
 module ROM::Kafka
-
   # Describes the gateway to Kafka
   #
   # The gateway has 3 responsibilities:
@@ -112,12 +109,12 @@ module ROM::Kafka
     #   How long to block until the server sends data.
     #   NOTE: This is only enforced if min_bytes is > 0.
     #
-    def initialize(*addresses)
+    def initialize(*addresses) # @todo: refactor the fat initializer
       options = Hash[addresses.pop]
-      brokers = Brokers.new(addresses, options).to_a
+      brokers = Brokers.new(addresses, options).to_a   # @todo: refactor using a factory
       super options.merge(brokers: brokers) # prepares #attributes
 
-      @producer = Connection::Producer.new(attributes)
+      @producer = Connection::Producer.new(attributes) # @todo: refactor using a factory
       @datasets = {}
     end
 
@@ -159,7 +156,5 @@ module ROM::Kafka
     def dataset?(topic)
       self[topic] ? true : false
     end
-
-  end # class Gateway
-
-end # module ROM::Kafka
+  end
+end

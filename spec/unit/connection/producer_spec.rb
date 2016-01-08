@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 describe ROM::Kafka::Connection::Producer do
 
   # ============================================================================
@@ -44,7 +42,7 @@ describe ROM::Kafka::Connection::Producer do
       expect(driver).to receive(:new).with(brokers, client, attributes)
       expect(subject).to eql(connection)
     end
-  end # describe #connection
+  end
 
   describe "#publish" do
     subject { producer.publish(*input) }
@@ -74,6 +72,5 @@ describe ROM::Kafka::Connection::Producer do
     it "returns the plain array of tuples" do
       expect(subject).to eql output
     end
-  end # describe #publish
-
-end # describe ROM::Kafka::Connection::Producer
+  end
+end

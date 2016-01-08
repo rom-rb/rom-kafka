@@ -1,9 +1,5 @@
-# encoding: utf-8
-
 module ROM::Kafka
-
   class Brokers
-
     # Describes an address to a brocker
     #
     # @example
@@ -19,7 +15,6 @@ module ROM::Kafka
     # @author Andrew Kozin <Andrew.Kozin@gmail.com>
     #
     class Broker
-
       include Equalizer.new(:port, :host)
       include Immutability
 
@@ -59,9 +54,6 @@ module ROM::Kafka
       def to_s
         "#{host}:#{port}"
       end
-
-    end # class Broker
-
-  end # class Brokers
-
-end # module ROM::Kafka
+    end
+  end
+end

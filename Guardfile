@@ -11,4 +11,4 @@ guard :rspec, cmd: "bundle exec rspec", all_on_start: true do
   watch("lib/rom-kafka.rb")    { "spec" }
   watch("spec/spec_helper.rb") { "spec" }
 
-end # guard :rspec
+end

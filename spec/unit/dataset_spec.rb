@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 describe ROM::Kafka::Dataset do
 
   let(:gateway_class)  { ROM::Kafka::Gateway }
@@ -17,7 +15,7 @@ describe ROM::Kafka::Dataset do
     it "is initialized" do
       expect(subject).to eql gateway
     end
-  end # describe #gateway
+  end
 
   describe "#topic" do
     subject { dataset.topic }
@@ -25,7 +23,7 @@ describe ROM::Kafka::Dataset do
     it "is initialized" do
       expect(subject).to eql topic
     end
-  end # describe #topic
+  end
 
   describe "#attributes" do
     subject { dataset.attributes }
@@ -64,7 +62,7 @@ describe ROM::Kafka::Dataset do
         expect(subject).to eql attributes
       end
     end
-  end # describe #attributes
+  end
 
   describe "#producer" do
     subject { dataset.producer }
@@ -72,7 +70,7 @@ describe ROM::Kafka::Dataset do
     it "is taken from #gateway" do
       expect(subject).to eql gateway.producer
     end
-  end # describe #producer
+  end
 
   describe "#consumer" do
     subject { dataset.consumer }
@@ -102,7 +100,7 @@ describe ROM::Kafka::Dataset do
       expect(consumer_class).to receive(:new).with(options)
       expect(subject).to eql consumer
     end
-  end # describe #consumer
+  end
 
   describe "#using" do
     subject { dataset.using(update) }
@@ -125,7 +123,7 @@ describe ROM::Kafka::Dataset do
     it "updates attributes" do
       expect(subject.attributes).to eql(dataset.attributes.merge(update))
     end
-  end # describe #using
+  end
 
   describe "#each" do
     subject { dataset.to_a }
@@ -160,6 +158,5 @@ describe ROM::Kafka::Dataset do
 
       it { is_expected.to be_kind_of Enumerator }
     end
-  end # describe #each
-
-end # describe ROM::Kafka::Dataset
+  end
+end

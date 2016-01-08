@@ -1,8 +1,6 @@
-# encoding: utf-8
 require "shared/scholars_topic"
 
 describe "Keys Usage" do
-
   include_context :scholars_topic
 
   it "works" do
@@ -30,5 +28,4 @@ describe "Keys Usage" do
       { value: "Philip", topic: "scholars", key: "5", offset: 1 }
     ]
   end
-
-end # describe Keys Usage
+end

@@ -1,7 +1,4 @@
-# encoding: utf-8
-
 module ROM::Kafka
-
   # The dataset describes Kafka topic
   #
   # @api private
@@ -75,7 +72,7 @@ module ROM::Kafka
       @topic    = topic.to_s
       @gateway  = gateway
       @producer = gateway.producer
-      @consumer = prepare_consumer
+      @consumer = prepare_consumer # @todo: refactor using a factory
     end
 
     # Returns a new dataset with updated consumer attributes
@@ -126,7 +123,5 @@ module ROM::Kafka
       enum = consumer.each
       limit.times { yield(enum.next) }
     end
-
-  end # class Dataset
-
-end # module ROM::Kafka
+  end
+end

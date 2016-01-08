@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 describe ROM::Kafka::Relation do
 
   let(:relation) { described_class.new dataset }
@@ -10,7 +8,7 @@ describe ROM::Kafka::Relation do
     subject { described_class.adapter }
 
     it { is_expected.to eql(:kafka) }
-  end # describe .adapter
+  end
 
   describe ".topic" do
     subject { described_class.topic :foo }
@@ -21,19 +19,19 @@ describe ROM::Kafka::Relation do
       expect(described_class).to receive(:dataset).with(:foo)
       subject
     end
-  end # describe .topic
+  end
 
   describe ".new" do
     subject { relation }
 
     it { is_expected.to be_kind_of ROM::Relation }
-  end # describe .new
+  end
 
   describe "#dataset" do
     subject { relation.dataset }
 
     it { is_expected.to eql(dataset) }
-  end # describe #dataset
+  end
 
   describe "#using" do
     subject { relation.using(options) }
@@ -48,7 +46,7 @@ describe ROM::Kafka::Relation do
       expect(dataset).to receive(:using).with(options)
       expect(subject.dataset).to eql(updated)
     end
-  end # describe #using
+  end
 
   describe "#offset" do
     subject { relation.offset(value) }
@@ -63,7 +61,7 @@ describe ROM::Kafka::Relation do
       expect(dataset).to receive(:using).with(offset: value)
       expect(subject.dataset).to eql(updated)
     end
-  end # describe #offset
+  end
 
   describe "#limit" do
     subject { relation.limit(value) }
@@ -78,7 +76,7 @@ describe ROM::Kafka::Relation do
       expect(dataset).to receive(:using).with(limit: value)
       expect(subject.dataset).to eql(updated)
     end
-  end # describe #limit
+  end
 
   describe "#from" do
     subject { relation.from(3) }
@@ -91,6 +89,5 @@ describe ROM::Kafka::Relation do
       expect(dataset).to receive(:using).with(partition: 3)
       expect(subject.dataset).to eql(updated)
     end
-  end # describe #where
-
-end # describe ROM::Kafka::Relation
+  end
+end

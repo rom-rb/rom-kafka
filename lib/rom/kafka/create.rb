@@ -1,11 +1,7 @@
-# encoding: utf-8
-
 module ROM::Kafka
-
   # The namespace for Kafka-specific ROM commands
   #
   module Commands
-
     # The Kafka-specific implementation of ROM::Commands::Create
     #
     # @example
@@ -67,9 +63,6 @@ module ROM::Kafka
       def tuple(text)
         { value: text.to_s, topic: dataset.topic, key: key }
       end
-
-    end # class Create
-
-  end # module Commands
-
-end # module ROM::Kafka
+    end
+  end
+end

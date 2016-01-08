@@ -1,8 +1,6 @@
-# encoding: utf-8
 require "shared/scholars_topic"
 
 describe "Basic Usage" do
-
   include_context :scholars_topic
 
   let(:add_scholars) { insert.with(key: 0) }
@@ -54,5 +52,4 @@ describe "Basic Usage" do
     # To start from the next offset, we should set it explicitly.
     expect(scholars.call.to_a).to eql []
   end
-
-end # describe Basic Usage
+end

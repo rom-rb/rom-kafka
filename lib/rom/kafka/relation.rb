@@ -1,7 +1,4 @@
-# encoding: utf-8
-
 module ROM::Kafka
-
   # The Kafka-specific implementation of ROM::Relation
   #
   # @example
@@ -63,7 +60,5 @@ module ROM::Kafka
     def limit(value)
       using(limit: value)
     end
-
-  end # class Relation
-
-end # module ROM::Kafka
+  end
+end
