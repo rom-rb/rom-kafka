@@ -16,7 +16,6 @@ module ROM::Kafka
     #
     class Broker
       include Equalizer.new(:port, :host)
-      include Immutability
 
       # Regex to extract host from address line
       HOST = %r{^\w+(\:\/\/)?\S+(?=\:)|\S+}.freeze

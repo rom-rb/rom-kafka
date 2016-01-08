@@ -1,14 +1,6 @@
-# encoding: utf-8
-
 describe ROM::Kafka::Brokers::Broker do
 
   let(:broker) { described_class.new }
-
-  describe ".new" do
-    subject { broker }
-
-    it { is_expected.to be_immutable }
-  end # describe .new
 
   describe "#host" do
     subject { broker.host }
@@ -28,7 +20,7 @@ describe ROM::Kafka::Brokers::Broker do
 
       it { is_expected.to eql "localhost" }
     end
-  end # describe #host
+  end
 
   describe "#port" do
     subject { broker.port }
@@ -56,13 +48,13 @@ describe ROM::Kafka::Brokers::Broker do
         expect(subject).to eql 9092
       end
     end
-  end # describe #port
+  end
 
   describe "#to_s" do
     subject { described_class.new(host: :"127.0.0.1:9093").to_s }
 
     it { is_expected.to eql "127.0.0.1:9093" }
-  end # describe #to_s
+  end
 
   describe "#==" do
     subject { broker == other }
@@ -84,6 +76,5 @@ describe ROM::Kafka::Brokers::Broker do
 
       it { is_expected.to eql false }
     end
-  end # describe #==
-
-end # describe ROM::Kafka::Brokers::Broker
+  end
+end

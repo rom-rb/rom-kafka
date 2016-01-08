@@ -20,9 +20,7 @@ module ROM::Kafka
   # @author Andrew Kozin <Andrew.Kozin@gmail.com>
   #
   class Brokers
-
     include Equalizer.new(:to_a)
-    include Immutability
 
     # @!method initialize(lines, options)
     # Initializes an immutable collection from address lines and/or options
