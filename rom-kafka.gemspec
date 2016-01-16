@@ -14,11 +14,11 @@ Gem::Specification.new do |gem|
   gem.extra_rdoc_files = Dir["README.md", "LICENSE", "CHANGELOG.md"]
   gem.require_paths    = ["lib"]
 
-  gem.required_ruby_version = "~> 1.9", ">= 1.9.3"
+  gem.required_ruby_version = ">= 1.9.3"
 
   gem.add_runtime_dependency "rom", "~> 1.0"
-  gem.add_runtime_dependency "poseidon", "0.0.5"
-  gem.add_runtime_dependency "attributes_dsl", ">= 0.1.1"
+  gem.add_runtime_dependency "poseidon", "~> 0.0.5"
+  gem.add_runtime_dependency "attributes_dsl", "~> 0.1.0", ">= 0.1.1"
 
   gem.add_development_dependency "hexx-rspec", "~> 0.5"
   gem.add_development_dependency "inflecto", "~> 0.0", ">= 0.0.2"
