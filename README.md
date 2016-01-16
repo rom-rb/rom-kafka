@@ -44,7 +44,7 @@ Compatibility
 
 Compatible to [ROM][rom] 0.9+, [Apache Kafka][kafka] 0.8+.
 
-Tested under [rubies compatible to MRI 1.9.3+][rubies].
+Tested under [rubies supported by ROM][rubies].
 
 Uses [RSpec][rspec] 3.0+ for testing and [hexx-suit][hexx-suit] for dev/test tools collection.
 

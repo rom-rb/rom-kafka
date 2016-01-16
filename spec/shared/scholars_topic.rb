@@ -1,22 +1,17 @@
 shared_examples :scholars_topic do
   let!(:rom) do
-    env = ROM::Environment.new
-    env.use :auto_registration
-
-    setup = env.setup(
-      :kafka, "localhost:9092",
+    options = {
       client_id: "admin",
-      # use the number of partition as a key
-      partitioner: -> key, total { key.to_i % total }
-    )
+      partitioner: proc { |key, total| key.to_i % total }
+    }
+    ROM.container(:kafka, "localhost:9092", options) do |config|
+      config.use(:macros)
 
-    setup.relation(:scholars)
-    setup.commands(:scholars) do
-      define(:create)
+      config.relation(:scholars)
+      config.commands(:scholars) do
+        define(:create)
+      end
     end
-
-    setup.finalize
-    setup.env
   end
 
   let(:scholars) { rom.relation(:scholars) }

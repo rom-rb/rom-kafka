@@ -55,7 +55,8 @@ module ROM::Kafka
       #   How long to block until the server sends data.
       #   NOTE: This is only enforced if min_bytes is > 0.
       #
-      def initialize(opts) # @todo: refactor usinng factory method Connection.build_consumer
+      # @todo: refactor usinng factory method Connection.build_consumer
+      def initialize(opts)
         super # takes declared attributes from options
         args = opts.values_at(:client_id, :brokers, :topic, :partition, :offset)
         @connection = DRIVER.consumer_for_partition(*args, attributes)
