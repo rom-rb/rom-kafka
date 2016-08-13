@@ -1,6 +1,6 @@
 Gem::Specification.new do |gem|
   gem.name             = "rom-kafka"
-  gem.version          = "0.0.2"
+  gem.version          = "0.0.3"
   gem.author           = ["Andrew Kozin"]
   gem.email            = ["andrew.kozin@gmail.com"]
   gem.summary          = "Kafka support for Ruby Object Mapper"
