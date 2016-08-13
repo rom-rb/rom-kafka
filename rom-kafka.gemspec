@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = ">= 1.9.3"
 
-  gem.add_runtime_dependency "rom", "~> 1.0"
+  gem.add_runtime_dependency "rom", "~> 2.0"
   gem.add_runtime_dependency "poseidon", "~> 0.0.5"
   gem.add_runtime_dependency "attributes_dsl", "~> 0.1.0", ">= 0.1.1"
 
