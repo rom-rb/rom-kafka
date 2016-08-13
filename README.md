@@ -42,11 +42,11 @@ Before `v0.1.0` the gem is in alpha stage.
 Compatibility
 -------------
 
-Compatible to [ROM][rom] 0.9+, [Apache Kafka][kafka] 0.8+.
+Compatible to [ROM][rom] 2.0+, [Apache Kafka][kafka] 0.8+.
 
 Tested under [rubies supported by ROM][rubies].
 
-Uses [RSpec][rspec] 3.0+ for testing and [hexx-suit][hexx-suit] for dev/test tools collection.
+Uses [RSpec][rspec] 3.0+ for testing and [hexx-suit][hexx-suit] dev/test tools collection.
 
 Contributing
 ------------
